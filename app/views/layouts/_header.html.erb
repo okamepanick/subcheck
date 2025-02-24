@@ -1,0 +1,18 @@
+
+<nav class="navbar navbar-expand-md" style="background-color: #0008c1">
+  <div class="container">
+    <div class="w-100 d-flex justify-content-between">
+      <div>
+        <%= link_to root_path, data: { turbolinks: false } do %>
+          <%= image_tag "logo.png", class: "img-fluid", width: "180px" %>
+        <% end %> <!-- link_to の閉じタグ -->
+      </div>
+
+      <div class="d-flex justify-content-end align-items-center gap-3">
+        <%= link_to "ログイン", "#", class: "btn btn-custom-outline", data: { turbolinks: false } %>
+        <%= link_to "新規会員登録", "#", class: "btn btn-custom-outline", data: { turbolinks: false } %>
+      </div>
+
+    </div>
+  </div>
+</nav>
