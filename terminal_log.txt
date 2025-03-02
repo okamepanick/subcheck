@@ -1,0 +1,220 @@
+Script started on Sun Mar  2 20:14:50 2025
+[1m[7m%[27m[1m[0m                                                                                                                                                                    [0m[27m[24m[Jsuzukikenta@suzukikentanoMacBook-Air subcheck % [K[?2004h;;2A;2A;2A;2A          ;  ;;2A;2A    ;  rails routes | grep user | less -S
+[K[K[A[48C[27Ccolumn -t[1B[A[48C[13C-E | grep user         [1B[A[48C[13C[3P[11C   [1B[A[48C                        [1B[K[A[48Cj hhistry  ory[?2004l[1B 1534  git log --online -n 5
+ 1535  git log --oneline -n 5\n
+ 1536  git log
+ 1537  git branch
+ 1538  git status
+ 1539  rails g controller subscriptions
+ 1540  rails s
+ 1541  rails s
+ 1542  rails s
+ 1543  rails routes -c
+ 1544  rails routes -c posts
+ 1545  rails routes -c users
+ 1546  rails routes | grep user\n
+ 1547  rails routes -E | grep user\n
+ 1548  rails routes | grep user | column -t\n
+ 1549  rails routes | gre[A[48C                        [1B[K[A[48Cj hhistry  ory[?2004l[1B 1534  git log --online -n 5
+ 1535  git log --oneline -n 5\n
+ 1536  git log
+ 1537  git branch
+ 1538  git status
+ 1539  rails g controller subscriptions
+ 1540  rails s
+ 1541  rails s
+ 1542  rails rrails s[?2004l
+=> Booting Puma
+=> Rails 7.2.2.1 application starting in development 
+=> Run `bin/rails server --help` for more startup options
+Puma starting in single mode...
+* Puma version: 6.6.0 ("Return to Forever")
+* Ruby version: ruby 3.1.0p0 (2021-12-25 revision fb4df44d16) [arm64-darwin24]
+*  Min threads: 3
+*  Max threads: 3
+*  Environment: development
+*          PID: 18373
+* Listening on http://127.0.0.1:3000
+* Listening on http://[::1]:3000
+Use Ctrl-C to stop
+Started GET "/" for ::1 at 2025-03-02 20:45:48 +0900
+  [1m[36mActiveRecord::SchemaMigration Load (2.1ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+  
+ActiveRecord::PendingMigrationError (
+
+Migrations are pending. To resolve this issue, run:
+
+        bin/rails db:migrate
+
+You have 1 pending migration:
+
+db/migrate/20250228203538_devise_create_users.rb
+
+
+):
+  
+activerecord (7.2.2.1) lib/active_record/migration.rb:756:Started GET "/" for ::1 at 2025-03-02 20:45:48 +0900
+  [1m[36mActiveRecord::SchemaMigration Load (2.1ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+  
+ActiveRecord::PendingMigrationError (
+
+Migrations are pending. To resolve this issue, run:
+
+        bin/rails db:migrate
+
+You have 1 pending migration:
+
+db/migrate/20250228203538_devise_create_users.rb
+
+
+):
+  
+activerecord (7.2.2.1) lib/active_record/migration.rb:756:in `check_pending_migrations'
+activerecord (7.2.2.1) lib/active_record/migration.rb:663:in `block (2 levels) in call'
+activesupport (7.2.2.1) lib/active_support/file_update_checker.rb:85:in `execute'
+activerecord (7.2.2.1) lib/active_record/migration.rb:668:in `block in call'
+activerecord (7.2.2.1) lib/active_record/migration.rb:660:in `synchronize'
+activerecord (7.2.2.1) lib/active_record/migration.rb:660:in `call'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/callbacks.rb:31:in `block in call'
+activesupport (7.2.2.1) lib/active_support/callbacks.rb:101:in `run_callbacks'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/callbacks.rb:30:in `call'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/executor.rb:16:in `call'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/actionable_exceptions.rb:18:in `call'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/debug_exceptions.rb:31:in `call'
+web-console (4.2.1) lib/web_console/middleware.rb:132:in `call_app'
+web-console (4.2.1) lib/web_console/middleware.rb:28:in `block in call'
+web-console (4.2.1) lib/web_console/middleware.rb:17:in `catch'
+web-console (4.2.1) lib/web_console/middleware.rb:17:in `call'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/show_exceptions.rb:32:in `call'
+railties (7.2.2.1) lib/rails/rack/logger.rb:41:in `call_app'
+railties (7.2.2.1) lib/rails/rack/logger.rb:29:in `call'
+sprockets-rails (3.5.2) lib/sprockets/rails/quiet_assets.rb:17:in `call'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/remote_ip.rb:96:in `call'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/request_id.rb:33:in `call'
+rack (3.1.10) lib/rack/method_override.rb:28:in `call'
+rack (3.1.10) lib/rack/runtime.rb:24:in `call'
+activesupport (7.2.2.1) lib/active_support/cache/strategy/local_cache_middleware.rb:29:in `call'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/server_timing.rb:61:in `block in call'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/server_timing.rb:26:in `collect_events'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/server_timing.rb:60:in `call'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/executor.rb:16:in `call'
+actionpack (7.2.2.1) lib/action_dispatch/middleware/static.rb:27:in `call'
+rack (3.1.10) lib/rack/sendfile.rb:114:in `call'
+actionpack (7.2.2.1) lib/action_dispatch/middleware^C- Gracefully stopping, waiting for requests to finish
+=== puma shutdown: 2025-03-02 21:46:21 +0900 ===
+- Goodbye!
+Exiting
+[1m[7m%[27m[1m[0m                                                                                                                                                                    [0m[27m[24m[Jsuzukikenta@suzukikentanoMacBook-Air subcheck % [K[?2004hrrails db:migrate[?2004l
+== 20250228203538 DeviseCreateUsers: migrating ================================
+-- create_table(:users)
+   -> 0.0668s
+-- add_index(:users, :email, {:unique=>true})
+   -> 0.0280s
+-- add_index(:users, :reset_password_token, {:unique=>true})
+   -> 0.0254s
+-- add_index(:users, :username, {:unique=>true})
+   -> 0.0378s
+== 20250228203538 DeviseCreateUsers: migrated (0.1582s) =======================
+
+[1m[7m%[27m[1m[0m                                                                                                                                                                    [0m[27m[24m[Jsuzukikenta@suzukikentanoMacBook-Air subcheck % [K[?2004hrails db:migrate[10Ds         [9D[?2004l
+=> Booting Puma
+=> Rails 7.2.2.1 application starting in development 
+=> Run `bin/rails server --help` for more startup options
+Puma starting in single mode...
+* Puma version: 6.6.0 ("Return to Forever")
+* Ruby version: ruby 3.1.0p0 (2021-12-25 revision fb4df44d16) [arm64-darwin24]
+*  Min threads: 3
+*  Max threads: 3
+*  Environment: development
+*          PID: 52744
+* Listening on http://127.0.0.1:3000
+* Listening on http://[::1]:3000
+Use Ctrl-C to stop
+Started GET "/" for ::1 at 2025-03-02 21:55:27 +0900
+  [1m[36mActiveRecord::SchemaMigration Load (1.7ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Processing by SubscriptionsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering subscriptions/index.html.erb within layouts/application
+  Rendered subscriptions/_main.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered subscriptions/index.html.erb within layouts/application (Duration: 0.8ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 51.4ms | GC: 9.3ms)
+Completed 500 Internal Server Error in 83ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 11.3ms)
+
+
+  
+LoadError (cannot load such file -- sassc):
+  
+app/views/layouts/application.html.erb:18
+^C- Gracefully stopping, waiting for requests to finish
+=== puma shutdown: 2025-03-02 21:57:59 +0900 ===
+- Goodbye!
+Exiting
+[1m[7m%[27m[1m[0m                                                                                                                                                                    [0m[27m[24m[Jsuzukikenta@suzukikentanoMacBook-Air subcheck % [K[?2004hggit add   status[?2004l
+On branch 認証機能の実装
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	[31mmodified:   Gemfile[m
+	[31mmodified:   Gemfile.lock[m
+	[31mmodified:   app/views/layouts/application.html.erb[m
+	[31mmodified:   config/routes.rb[m
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	[31mapp/models/user.rb[m
+	[31mapp/views/layouts/_f[?2004l
+On branch 認証機能の実装
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	[31mmodified:   Gemfile[m
+	[31mmodified:   Gemfile.lock[m
+	[31mmodified:   app/views/layouts/application.html.erb[m
+	[31mmodified:   config/routes.rb[m
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	[31mapp/models/user.rb[m
+	[31mapp/views/layouts/_flash-message.html.erb[m
+	[31mconfig/initializers/devise.rb[[7mgit reset terminal_log.txt[27m
+[K[A[48C[27mg[27mi[27mt[27m [27mr[27me[27ms[27me[27mt[27m [27mt[27me[27mr[27mm[27mi[27mn[27ma[27ml[27m_[27ml[27mo[27mg[27m.[27mt[27mx[27mt[1B[K[?2004l
+Unstaged changes after reset:
+M	Gemfile
+M	Gemfile.lock
+M	app/views/layouts/application.html.erb
+M	config/routes.rb
+[1m[7m%[27m[1m[0m                                                                                                                                                                    [0m[27m[24m[Jsuzukikenta@suzukikentanoMacBook-Air subcheck % [K[?2004hgit reset terminal_log.txt
+[K[K[A[48C[4Cstatus                [1B[K[A[58C[?2004l[1BOn branch 認証機能の実装
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	[31mmodified:   Gemfile[m
+	[31mmodified:   Gemfile.lock[m
+	[31mmodified:   app/views/layouts/application.html.erb[m
+	[31mmodified:   config/routes.rb[m
+
+Untracked files:
+  (use "git add <file>..." to inclgit reset terminal_log.txt
+[K[K[A[48C[4Cstatus                [1B[K[A[58C[?2004l[1BOn branch 認証機能の実装
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	[31mmodified:   Gemfile[m
+	[31mmodified:   Gemfile.lock[m
+	[31mmodified:   app/views/layouts/application.html.erb[m
+	[31mmodified:   config/routes.rb[m
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	[31mapp/models/user.rb[m
+	[31mapp/views/layouts/_flash-message.html.erb[m
+	[31mconfig/initializers/devise.rb[m
+	[31mconfig/locales/devise.en.yml[m
+	[31mdb/migrate/[m
+	[31mdb/schema.rb[m
+	[31mterminal_log.txt[m
+	[31mtest/fixtures/users.yml[m
+	[31mtest/models/user_test.rb[m
+
+no changes added to commit (use "git add" and/or "git commit -a")
+[1m[7m%[27m[1m[0m                                                                                                                                                                    [0m[27m[24m[Jsuzukikenta@suzukikentanoMacBook-Air subcheck % [K[?2004h
