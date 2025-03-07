@@ -12,12 +12,12 @@
 
 ActiveRecord::Schema[7.2].define(version: 2025_03_06_140959) do
   create_table "subscriptions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "service_name"
-    t.date "start_date"
-    t.date "next_billing_date"
-    t.integer "billing_cycle"
-    t.decimal "price", precision: 10, scale: 2
-    t.string "payment_method"
+    t.string "service_name", null: false
+    t.date "start_date", null: false
+    t.date "next_billing_date", null: false
+    t.integer "billing_cycle", null: false
+    t.integer "price", null: false
+    t.string "payment_method", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
