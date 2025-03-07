@@ -1,6 +1,20 @@
 class Subscription < ApplicationRecord
   belongs_to :user
 
-  enum billing_cycle: { monthly: 1, yearly: 12 }
-end
+  enum billing_cycle: { monthly: 1, yearly: 2 }
 
+  validates :service_name, presence: true, length: { maximum: 255 }
+  validates :start_date, presence: true
+  validate :next_billing_date_after_start_date
+  validates :billing_cycle, presence: true
+  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :payment_method, presence: true, length: { maximum: 255 }
+
+  private
+
+  def next_billing_date_after_start_date
+    if next_billing_date.present? && next_billing_date <= start_date
+      errors.add(:next_billing_date, "開始日より後である必要があります")
+    end
+  end
+end
