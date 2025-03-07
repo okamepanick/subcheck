@@ -8,16 +8,12 @@
       </div>
 
       <div class="d-flex justify-content-end gap-3">
-        <% if (controller_name == 'subscriptions' && ['new', 'show', 'edit'].include?(action_name)) || controller_name == 'users' && ['show', 'edit'].include?(action_name) %>
-          <%= link_to "トップページに戻る", root_path, class: "btn btn-custom-outline" %>
-        <% else %>
           <% if user_signed_in? %>
             <%= link_to 'ログアウト', destroy_user_session_path, data: { turbo_method: :delete }, class: "btn btn-custom-outline" %>
           <% else %>
             <%= link_to "ログイン", new_user_session_path, class: "btn btn-custom-outline" %>
             <%= link_to "新規会員登録", new_user_registration_path, class: "btn btn-custom-outline" %>
           <% end %>
-        <% end %>
       </div>
     </div>
   </div>
