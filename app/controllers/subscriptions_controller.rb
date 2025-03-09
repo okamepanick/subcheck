@@ -7,7 +7,12 @@ class SubscriptionsController < ApplicationController
   end
 
   def create
-    @subscription = Subscription.create(subscription_params)
+    @subscription = current_user.subscriptions.new(subscription_params)
+    if @subscription.save
+      redirect_to root_path, notice: "登録されました"
+    else
+      render :new
+    end
   end
 
   private
