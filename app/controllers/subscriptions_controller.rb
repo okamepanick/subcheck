@@ -1,6 +1,7 @@
 class SubscriptionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
   def index
+    @subscriptions = Subscription.all
   end
 
   def new
