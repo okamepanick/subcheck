@@ -1,4 +1,5 @@
 class SubscriptionsController < ApplicationController
+  before_action :authenticate_user!, only: [:new, :create]
   def index
   end
 
@@ -7,7 +8,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def create
-    @subscription = current_user.subscriptions.new(subscription_params)
+    @subscription = Subscription.new(subscription_params)
     if @subscription.save
       redirect_to root_path, notice: "登録されました"
     else
@@ -18,6 +19,6 @@ class SubscriptionsController < ApplicationController
   private
 
   def subscription_params
-    params.require(:subscription).permit(:service_name, :start_date, :next_billing_date, :billing_cycle, :price, :payment_method)
+    params.require(:subscription).permit(:service_name, :start_date, :next_billing_date, :billing_cycle, :price, :payment_method).merge(user_id: current_user.id)
   end
 end
