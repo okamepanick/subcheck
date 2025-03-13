@@ -2,6 +2,8 @@ class SubscriptionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
   def index
     @subscriptions = Subscription.all
+    @total_amount = Subscription.all.sum(:price)
+    @next_subscription = Subscription.order(next_billing_date: "asc").first
   end
 
   def new

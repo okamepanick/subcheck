@@ -1,1 +1,5 @@
-<%= render 'main' %>
+<% if user_signed_in? %>
+  <%= render 'subscription' %>
+<% else %>
+  <%= render 'main' %>
+<% end %>
