@@ -3,7 +3,8 @@ class SubscriptionsController < ApplicationController
   def index
     @subscriptions = Subscription.all
     @total_amount = Subscription.all.sum(:price)
-    @next_subscription = Subscription.order(next_billing_date: "asc").first
+    earliest_date = Subscription.where("next_billing_date >= ?", Date.today).minimum(:next_billing_date)
+    @next_subscription = Subscription.where(next_billing_date: earliest_date)
   end
 
   def new

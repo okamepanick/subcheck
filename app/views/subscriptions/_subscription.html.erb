@@ -3,12 +3,27 @@
 <div class="card my-5">
   <div class="card-body d-flex justify-content-around">
     <div>
-      <h5 class="card-title">総額</h5>
-      <h5 class="card-title">¥<%= @total_amount%></h5>
+      <h2 class="card-title">総額</h2>
+      <% if @total_amount > 0 %>
+        <h5 class="card-title alert alert-primary my-5" role="alert">¥<%= @total_amount %>/月</h5>
+      <% else %>
+        <div class="alert alert-warning h5" role="alert">
+          現在、登録されているサブスクリプションはありませんので、総額は0円です。
+        </div>
+      <% end %>
     </div>
     <div>
-      <h5 class="card-title">次回更新日</h5>
-      <h5 class="card-title"><%= @next_subscription.next_billing_date %></h5>
+      <h2 class="card-title">次回更新日</h2>
+      <% if @next_subscription.any? %>
+        <% @next_subscription.each do |next_subscription| %>
+        <h5 class="card-title alert alert-primary" role="alert"><%= next_subscription.service_name %></h5>
+        <h5 class="card-title alert alert-primary" role="alert"><%= next_subscription.next_billing_date %></h5>
+        <% end %>
+      <% else %>
+        <div class="alert alert-warning h5" role="alert">
+          次回更新日が設定されていません
+        </div>
+      <% end %>
     </div>
   </div>
 </div>
