@@ -9,15 +9,21 @@
       <% else %>
         <div class="alert alert-warning h5" role="alert">
           現在、登録されているサブスクリプションはありませんので、総額は0円です。
+          <br>
+          <p class="">サブスクを登録しましょう！<p>
+          <div class="d-flex justify-content-center">
+            <%= link_to 'サブスクリプションを登録しよう！', new_subscription_path, class: 'btn btn-primary' %>
+          </div>
         </div>
       <% end %>
     </div>
     <div>
       <h2 class="card-title">次回更新日</h2>
-      <% if @next_subscription.any? %>
-        <% @next_subscription.each do |next_subscription| %>
-        <h5 class="card-title alert alert-primary" role="alert"><%= next_subscription.service_name %></h5>
-        <h5 class="card-title alert alert-primary" role="alert"><%= next_subscription.next_billing_date %></h5>
+      <% if @next_subscriptions.any? %>
+        <% @next_subscriptions.each do |next_subscription| %>
+          <h5 class="card-title alert alert-primary" role="alert"><%= next_subscription.service_name %>
+          <%= next_subscription.next_billing_date.strftime("%Y年%m月%d日") %>
+        </h5>
         <% end %>
       <% else %>
         <div class="alert alert-warning h5" role="alert">

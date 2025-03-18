@@ -2,9 +2,11 @@ class SubscriptionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
   def index
     @subscriptions = Subscription.all
-    @total_amount = Subscription.all.sum(:price)
+    monthly_total = Subscription.monthly.sum(:price)
+    yearly_total = Subscription.yearly.sum(:price) / 12
+    @total_amount = monthly_total + yearly_total
     earliest_date = Subscription.where("next_billing_date >= ?", Date.today).minimum(:next_billing_date)
-    @next_subscription = Subscription.where(next_billing_date: earliest_date)
+    @next_subscriptions = Subscription.where(next_billing_date: earliest_date)
   end
 
   def new
