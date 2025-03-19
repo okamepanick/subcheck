@@ -10,6 +10,23 @@ class Subscription < ApplicationRecord
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :payment_method, presence: true, length: { maximum: 255 }
 
+  def formatted_start_date
+    start_date.strftime("%Y年%m月%d日")
+  end
+
+  def formatted_next_billing_date
+    next_billing_date.strftime("%Y年%m月%d日")
+  end
+
+  def billing_cycle_text
+    case billing_cycle
+    when "monthly"
+      "1ヶ月"
+    when "yearly"
+      "1年"
+    end
+  end
+
   private
 
   def next_billing_date_after_start_date

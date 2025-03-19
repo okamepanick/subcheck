@@ -1,1 +1,9 @@
-<%= render 'main' %>
+<% if user_signed_in? %>
+  <% if @subscriptions.any? %>
+    <%= render 'subscription' %>
+  <% else %>
+    <%= render 'empty_subscriptions' %>
+  <% end %>
+<% else %>
+  <%= render 'main' %>
+<% end %>
