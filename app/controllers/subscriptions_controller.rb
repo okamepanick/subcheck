@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create, :index]
+  before_action :authenticate_user!, only: [:new, :create]
   def index
     @subscriptions = current_user.subscriptions
     monthly_total = current_user.subscriptions.monthly.sum(:price)
