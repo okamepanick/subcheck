@@ -1,0 +1,44 @@
+<div class="container w-50">
+
+  <div class="text-center mt-5">
+    <h2>サブスク詳細</h2>
+  </div>
+
+  <div class="row justify-content-center">
+    <%= form_with model: @subscription, local: true do  |f| %>
+      <div class="my-3">
+        <%= f.label :service_name, "利用サービス名", class: "text-secondary fw-bold mb-2" %>
+        <%= f.text_field :service_name, class: "form-control shadow-sm py-md-3", readonly: true %>
+      </div>
+
+      <div class="my-3">
+        <%= f.label :start_date, "支払い開始日", class: "text-secondary fw-bold mb-2" %>
+        <%= f.date_field :start_date, class: "form-control shadow-sm py-md-3", readonly: true %>
+      </div>
+
+      <div class="my-3">
+        <%= f.label :next_billing_date, "次回請求日", class: "text-secondary fw-bold mb-2" %>
+        <%= f.date_field :next_billing_date, class: "form-control shadow-sm py-md-3", readonly: true %>
+      </div>
+
+      <div class="my-3">
+        <%= f.label :billing_cycle, "支払い頻度", class: "text-secondary fw-bold mb-2" %>
+        <%= f.select :billing_cycle, options_for_select([["月払い", "monthly"], ["年払い", "yearly"]]), {}, class: "form-control shadow-sm py-mb-3", disabled: true %>
+      </div>
+
+      <div class="my-3">
+        <%= f.label :price, "利用料金", class: "text-secondary fw-bold mb-2" %>
+        <%= f.number_field :price, class: "form-control shadow-sm py-md-3", readonly: true%>
+      </div>
+
+      <div class="my-3">
+        <%= f.label :payment_method, "支払い方法", class: "text-secondary fw-bold mb-2" %>
+        <%= f.text_field :payment_method, class: "form-control shadow-sm py-mb-3", readonly: true %>
+      </div>
+
+      <div class="text-center py-md-3">
+        <%= link_to "編集する", edit_subscription_path(@subscription), class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>
