@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create, :show]
+  before_action :authenticate_user!, only: [:new, :create, :show, :index]
   def index
     @subscriptions = current_user.subscriptions
     monthly_total = current_user.subscriptions.monthly.sum(:price)
@@ -20,7 +20,10 @@ class SubscriptionsController < ApplicationController
   end
 
   def show
-    @subscription = current_user.subscriptions.find(params[:id])
+    @subscription = current_user.subscriptions.find_by(id: params[:id])
+    if @subscription.blank?
+      redirect_to root_path
+    end
   end
 
   def new
