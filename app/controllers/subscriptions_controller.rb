@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create, :show]
+  before_action :authenticate_user!, only: [:new, :create, :show, :edit]
   def index
     if user_signed_in?
       @subscriptions = current_user.subscriptions
@@ -40,6 +40,13 @@ class SubscriptionsController < ApplicationController
       redirect_to root_path, notice: "登録されました"
     else
       render :new
+    end
+  end
+
+  def edit
+    @subscription = current_user.subscriptions.find_by(id: params[:id])
+    if @subscription.blank?
+      redirect_to root_path
     end
   end
 
