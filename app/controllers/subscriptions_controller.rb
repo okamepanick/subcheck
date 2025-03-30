@@ -1,5 +1,6 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create, :show]
+  before_action :authenticate_user!, only: [:new, :create, :show, :edit]
+  before_action :set_subscription, only: [:show, :edit]
   def index
     if user_signed_in?
       @subscriptions = current_user.subscriptions
@@ -24,10 +25,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def show
-    @subscription = current_user.subscriptions.find_by(id: params[:id])
-    if @subscription.blank?
-      redirect_to root_path
-    end
+
   end
 
   def new
@@ -43,9 +41,20 @@ class SubscriptionsController < ApplicationController
     end
   end
 
+  def edit
+
+  end
+
   private
 
   def subscription_params
     params.require(:subscription).permit(:service_name, :start_date, :next_billing_date, :billing_cycle, :price, :payment_method).merge(user_id: current_user.id)
+  end
+
+  def set_subscription
+    @subscription = current_user.subscriptions.find_by(id: params[:id])
+    if @subscription.blank?
+      redirect_to root_path
+    end
   end
 end
