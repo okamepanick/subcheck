@@ -1,6 +1,6 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create, :show, :edit]
-  before_action :set_subscription, only: [:show, :edit]
+  before_action :authenticate_user!, only: [:new, :create, :show, :edit, :update]
+  before_action :set_subscription, only: [:show, :edit, :update]
   def index
     if user_signed_in?
       @subscriptions = current_user.subscriptions
@@ -42,7 +42,14 @@ class SubscriptionsController < ApplicationController
   end
 
   def edit
+  end
 
+  def update
+    if @subscription.update(subscription_params)
+      redirect_to root_path, notice: "更新しました。"
+    else
+      render :edit
+    end
   end
 
   private
