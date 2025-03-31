@@ -3,5 +3,8 @@
     <h2>サブスク編集</h2>
   </div>
 
- <%= render partial: 'form', locals: { subscription: @subscription, button_text: '更新する', button_delete: '削除する' } %>
+ <%= render partial: 'form', locals: { subscription: @subscription, button_text: '更新する'} %>
+  <div class="text-center py-md-3">
+    <%= link_to '削除する', subscription_path(@subscription), data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: "btn btn-secondary" %>
+  </div>
 </div>
