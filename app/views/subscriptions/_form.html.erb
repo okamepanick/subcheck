@@ -37,7 +37,13 @@
       </div>
 
       <div class="text-center py-md-3">
-        <%= f.submit button_text %>
+        <%= f.submit button_text, class: "btn btn-primary" %>
+      </div>
+
+      <div class="text-center py-md-3">
+        <% if button_delete.present? %>
+          <%= link_to button_delete, subscription_path(subscription), data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: "btn btn-secondary" %>
+        <% end %>
       </div>
     <% end %>
   </div>
