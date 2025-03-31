@@ -1,6 +1,6 @@
 class SubscriptionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create, :show, :edit, :update]
-  before_action :set_subscription, only: [:show, :edit, :update]
+  before_action :set_subscription, only: [:show, :edit, :update, :destroy]
   def index
     if user_signed_in?
       @subscriptions = current_user.subscriptions
@@ -50,6 +50,11 @@ class SubscriptionsController < ApplicationController
     else
       render :edit
     end
+  end
+
+  def destroy
+    @subscription.destroy
+    redirect_to root_path
   end
 
   private
