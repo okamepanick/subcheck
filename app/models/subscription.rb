@@ -6,9 +6,9 @@ class Subscription < ApplicationRecord
   validates :service_name, presence: true, length: { maximum: 255 }
   validates :start_date, presence: true
   validates :next_billing_date, presence: true
-  validate :next_billing_date_after_start_date
   validates :billing_cycle, presence: true
-  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validate :next_billing_date_after_start_date
+  validates :price, presence: true
   validates :payment_method, presence: true, length: { maximum: 255 }
 
   def formatted_start_date
