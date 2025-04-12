@@ -1,16 +1,15 @@
  <div class="row justify-content-center">
     <%= form_with model: subscription, local: true do |f| %>
-
-    <% if subscription.errors.any? %>
-      <div class="alert alert-danger">
-        <h3><%= subscription.errors.count %>件のエラーが発生しました</h3>
-        <ul>
-          <% subscription.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
+      <% if subscription.errors.any? %>
+        <div class="alert alert-danger">
+          <h3><%= subscription.errors.count %>件のエラーが発生しました</h3>
+          <ul>
+            <% subscription.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
 
       <div class="my-3">
         <%= f.label :service_name, "利用サービス名", class: "text-secondary fw-bold mb-2" %>
