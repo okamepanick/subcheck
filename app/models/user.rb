@@ -6,7 +6,7 @@ class User < ApplicationRecord
 
   has_many :subscriptions
 
-  validates :username, presence: true, uniqueness: {case_sensitive: false}, length: {minimum:3, maximum:10}
+  validates :username, presence: true, length: {minimum:3, maximum:10}
 
   validates :password, presence: true, length: { minimum: 6 }, if: :password_required?
 

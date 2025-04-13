@@ -4,12 +4,6 @@ class SubscriptionsController < ApplicationController
   def index
     if user_signed_in?
       @subscriptions = current_user.subscriptions
-      monthly_total = current_user.subscriptions.monthly.sum(:price)
-      yearly_total = current_user.subscriptions.yearly.sum(:price) / 12
-      @total_amount = monthly_total + yearly_total
-      earliest_date = current_user.subscriptions.where("next_billing_date >= ?", Date.today).minimum(:next_billing_date)
-      @next_subscriptions = current_user.subscriptions.where(next_billing_date: earliest_date)
-
       @subscriptions.map do |subscription|
         if subscription.next_billing_date < Date.today
           if subscription.monthly?
@@ -19,8 +13,11 @@ class SubscriptionsController < ApplicationController
           end
         end
       end
-    else
-      @subscriptions = []
+      monthly_total = @subscriptions.monthly.sum(:price)
+      yearly_total = @subscriptions.yearly.sum(:price) / 12
+      @total_amount = monthly_total + yearly_total
+      earliest_date = @subscriptions.where("next_billing_date >= ?", Date.today).minimum(:next_billing_date)
+      @next_subscriptions = @subscriptions.where(next_billing_date: earliest_date)
     end
   end
 
@@ -35,9 +32,9 @@ class SubscriptionsController < ApplicationController
   def create
     @subscription = Subscription.new(subscription_params)
     if @subscription.save
-      redirect_to root_path, notice: "登録されました"
+      redirect_to root_path, notice: "サブスクが正常に登録されました。"
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -46,15 +43,15 @@ class SubscriptionsController < ApplicationController
 
   def update
     if @subscription.update(subscription_params)
-      redirect_to root_path, notice: "更新しました。"
+      redirect_to root_path, notice: "サブスクが正常に更新されました。"
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
     @subscription.destroy
-    redirect_to root_path
+    redirect_to root_path, notice: "サブスクが正常に削除されました。"
   end
 
   private

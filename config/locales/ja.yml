@@ -1,0 +1,29 @@
+ja:
+  errors:
+    format: "%{attribute}%{message}"
+
+  activerecord:
+    attributes:
+      subscription:
+        service_name: "利用サービス名"
+        start_date: "支払い開始日"
+        next_billing_date: "次回請求日"
+        billing_cycle: "支払い頻度"
+        price: "利用料金"
+        payment_method: "支払い方法"
+    errors:
+      models:
+        subscription:
+          attributes:
+            service_name:
+              blank: "を入力してください。"
+            start_date:
+              blank: "を入力してください。"
+            next_billing_date:
+              blank: "を入力してください。"
+            billing_cycle:
+              blank: "を入力してください。"
+            price:
+              blank: "を入力してください。"
+            payment_method:
+              blank: "を入力してください。"
