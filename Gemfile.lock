@@ -110,6 +110,10 @@ GEM
       warden (~> 1.2.3)
     devise-i18n (1.12.0)
       devise (>= 4.9.0)
+    dotenv (3.1.8)
+    dotenv-rails (3.1.8)
+      dotenv (= 3.1.8)
+      railties (>= 6.1)
     drb (2.2.1)
     error_highlight (0.7.0)
     erubi (1.13.1)
@@ -132,6 +136,7 @@ GEM
       activesupport (>= 5.0.0)
     json (2.10.1)
     language_server-protocol (3.17.0.4)
+    line-bot-api (1.29.1)
     lint_roller (1.1.0)
     logger (1.6.6)
     loofah (2.24.0)
@@ -335,9 +340,11 @@ DEPENDENCIES
   debug
   devise (= 4.9.3)
   devise-i18n (= 1.12.0)
+  dotenv-rails
   error_highlight (>= 0.4.0)
   importmap-rails
   jbuilder
+  line-bot-api
   mysql2 (~> 0.5)
   pry-rails (= 0.3.9)
   puma (>= 5.0)
