@@ -4,4 +4,6 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
  }
   resources :subscriptions
+
+  post 'line/callback', to: 'line_bots#callback'
 end
