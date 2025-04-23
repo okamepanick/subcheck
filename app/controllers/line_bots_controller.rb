@@ -13,28 +13,18 @@ class LineBotsController < ApplicationController
         line_user_id = event['source']['userId']
         Rails.logger.debug "Received Follow event. line_user_id: #{line_user_id}"
 
-        # ユーザーのLINEプロフィールを取得
         profile = client.get_profile(line_user_id)
 
         if profile.is_a?(Net::HTTPSuccess)
           profile_data = JSON.parse(profile.body)
-          username = profile_data['displayName']  # LINEのユーザー名を取得
+          username = profile_data['displayName']
+          user = User.find_or_create_by(line_user_id: line_user_id) do |u|
+            u.email = "line_#{SecureRandom.hex(4)}@example.com"
+            u.username = username
+            u.password = line_user_id[0, 8]
+          end
         else
-          username = "default"  # プロフィールが取得できない場合はデフォルト名
-        end
-
-        # ユーザーが存在しない場合は、デフォルト値をセットして作成
-        user = User.find_or_create_by(line_user_id: line_user_id) do |u|
-          u.email = "line_#{SecureRandom.hex(4)}@example.com"
-          u.username = username  # 取得したLINEのユーザー名を設定
-          u.password = SecureRandom.hex(8)  # 適当な8文字のランダム文字列
-        end
-
-        Rails.logger.debug "User found or created: #{user.inspect}"
-        Rails.logger.debug "User persisted?: #{user.persisted?}"
-
-        unless user.persisted?
-          Rails.logger.debug "User not saved: #{user.errors.full_messages}"
+          Rails.logger.debug "プロフィール取得に失敗しました。"
         end
       end
     end
