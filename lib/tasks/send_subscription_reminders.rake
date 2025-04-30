@@ -18,7 +18,6 @@ namespace :subscriptions do
       end
 
       client.push_message(user.line_user_id, message)
-      puts "通知 sent to #{user.username} for #{subscription.service_name}"
     end
   end
 end
