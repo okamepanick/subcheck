@@ -52,7 +52,7 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
-  gem 'pry-rails', '0.3.9'
+  gem 'pry-rails', '0.3.11'
 end
 
 group :development do
