@@ -31,7 +31,5 @@ module Subcheck
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-    # This line should only appear once
-
   end
 end
