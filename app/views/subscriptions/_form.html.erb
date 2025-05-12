@@ -47,8 +47,26 @@
         <%= f.text_field :payment_method, class: "form-control shadow-sm py-mb-3" %>
       </div>
 
+    <%= f.hidden_field :line_user_id, id: 'line_user_id', value: "" %>
+
       <div class="text-center py-md-3">
         <%= f.submit button_text, class: "btn btn-primary" %>
       </div>
     <% end %>
   </div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    await liff.init({ liffId: "<%= ENV['LINE_LIFF_ID'] %>" });
+
+    const profile = await liff.getProfile();
+    const userId = profile.userId;
+
+    const hiddenField = document.getElementById("line_user_id");
+    if (hiddenField) {
+      hiddenField.value = userId;
+    }
+  });
+</script>

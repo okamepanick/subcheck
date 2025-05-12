@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create, :show, :edit, :update]
+  before_action :authenticate_user!, only: [:show, :edit, :update]
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
   def index
     if user_signed_in?
@@ -30,9 +30,15 @@ class SubscriptionsController < ApplicationController
   end
 
   def create
+    line_user_id = params[:subscription][:line_user_id]
+
+    user = User.find_by(line_user_id: line_user_id)
+
     @subscription = Subscription.new(subscription_params)
+    @subscription.user = user
+
     if @subscription.save
-      redirect_to root_path, notice: "サブスクが正常に登録されました。"
+      redirect_to subscriptions_path, notice: "サブスクを登録しました"
     else
       render :new, status: :unprocessable_entity
     end
@@ -57,7 +63,7 @@ class SubscriptionsController < ApplicationController
   private
 
   def subscription_params
-    params.require(:subscription).permit(:service_name, :start_date, :next_billing_date, :billing_cycle, :price, :payment_method).merge(user_id: current_user.id)
+    params.require(:subscription).permit(:service_name, :start_date, :next_billing_date, :billing_cycle, :price, :payment_method)
   end
 
   def set_subscription
