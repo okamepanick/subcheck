@@ -59,7 +59,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', async () => {
-    await liff.init({ liffId: "<%= ENV['LINE_LIFF_ID'] %>" });
+    await liff.init({ liffId: "<%= ENV['SUBSCRIPTION_LIFF_ID'] %>" });
 
     const profile = await liff.getProfile();
     const userId = profile.userId;
