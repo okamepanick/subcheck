@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create, :show, :edit, :update]
+  before_action :authenticate_user!, only: [:show, :edit, :update]
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
   def index
     if user_signed_in?
@@ -30,11 +30,16 @@ class SubscriptionsController < ApplicationController
   end
 
   def create
-    @subscription = Subscription.new(subscription_params)
+    line_user_id = params[:subscription][:line_user_id]
+
+    user = User.find_by(line_user_id: line_user_id)
+
+    @subscription = user.subscriptions.build(subscription_params)
+
     if @subscription.save
       redirect_to root_path, notice: "サブスクが正常に登録されました。"
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_entity #HTTPステータスを明示的にするためにunprocessable_entityを書いた（入力に不正があるから。）
     end
   end
 
@@ -57,7 +62,7 @@ class SubscriptionsController < ApplicationController
   private
 
   def subscription_params
-    params.require(:subscription).permit(:service_name, :start_date, :next_billing_date, :billing_cycle, :price, :payment_method).merge(user_id: current_user.id)
+    params.require(:subscription).permit(:service_name, :start_date, :next_billing_date, :billing_cycle, :price, :payment_method)
   end
 
   def set_subscription
