@@ -1,24 +1,30 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_user!, only: [:show, :edit, :update]
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
+
   def index
-    if user_signed_in?
-      @subscriptions = current_user.subscriptions
-      @subscriptions.map do |subscription|
-        if subscription.next_billing_date < Date.today
-          if subscription.monthly?
-            subscription.update(next_billing_date: subscription.next_billing_date.next_month)
-          elsif subscription.yearly?
-            subscription.update(next_billing_date: subscription.next_billing_date.next_year)
-          end
+    if params[:line_user_id]
+      @line_user = LineUser.find(params[:line_user_id])
+      @subscriptions = @line_user.subscriptions
+    else
+      @subscriptions = Subscription.all
+    end
+
+    @subscriptions.map do |subscription|
+      if subscription.next_billing_date < Date.today
+        if subscription.monthly?
+          subscription.update(next_billing_date: subscription.next_billing_date.next_month)
+        elsif subscription.yearly?
+          subscription.update(next_billing_date: subscription.next_billing_date.next_year)
         end
       end
-      monthly_total = @subscriptions.monthly.sum(:price)
-      yearly_total = @subscriptions.yearly.sum(:price) / 12
-      @total_amount = monthly_total + yearly_total
-      earliest_date = @subscriptions.where("next_billing_date >= ?", Date.today).minimum(:next_billing_date)
-      @next_subscriptions = @subscriptions.where(next_billing_date: earliest_date)
     end
+
+    monthly_total = @subscriptions.monthly.sum(:price)
+    yearly_total = @subscriptions.yearly.sum(:price) / 12
+    @total_amount = monthly_total + yearly_total
+
+    earliest_date = @subscriptions.where("next_billing_date >= ?", Date.today).minimum(:next_billing_date)
+    @next_subscriptions = @subscriptions.where(next_billing_date: earliest_date)
   end
 
   def show

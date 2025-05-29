@@ -7,7 +7,7 @@ class CreateSubscriptions < ActiveRecord::Migration[7.2]
       t.integer :billing_cycle, null: false
       t.integer :price, null: false
       t.string :payment_method, null: false
-      t.references :user, null: false, foreign_key: true
+      t.references :line_user, null: false, foreign_key: true
 
       t.timestamps
     end
