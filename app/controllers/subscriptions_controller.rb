@@ -1,12 +1,17 @@
 class SubscriptionsController < ApplicationController
+  before_action :authenticate_admin_user!
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
 
   def index
     if params[:line_user_id]
-      @line_user = LineUser.find(params[:line_user_id])
-      @subscriptions = @line_user.subscriptions
+      line_user = LineUser.find_by(id: params[:line_user_id])
+      if line_user
+        @subscriptions = line_user.subscriptions
+      else
+        @subscriptions = []
+      end
     else
-      @subscriptions = Subscription.all
+      @subscriptions = []
     end
 
     @subscriptions.map do |subscription|
@@ -72,7 +77,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def set_subscription
-    @subscription = current_user.subscriptions.find_by(id: params[:id])
+    @subscription = Subscription.find(params[:id])
     if @subscription.blank?
       redirect_to root_path
     end

@@ -7,4 +7,5 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
-LineUser.create(display_name: "testさん", line_uid: 1234)
+LineUser.create!(display_name: "test3", line_uid: 1215)
+

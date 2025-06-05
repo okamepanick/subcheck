@@ -17,7 +17,7 @@
       <tr>
         <td><%= line_user.display_name %></td>
         <td><%= line_user.line_uid %></td>
-        <td><%= link_to "詳細", line_user_subscriptions_path(line_user) %></td>
+        <td><%= link_to "詳細", subscriptions_path(line_user_id: line_user.id) %></td>
       </tr>
     <% end %>
   </tbody>
