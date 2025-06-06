@@ -38,7 +38,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_28_140959) do
 
   create_table "line_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "display_name", null: false
-    t.integer "line_uid", null: false
+    t.string "line_uid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
