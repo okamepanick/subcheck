@@ -1,24 +1,35 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_user!, only: [:show, :edit, :update]
+  before_action :authenticate_admin_user!
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
+
   def index
-    if user_signed_in?
-      @subscriptions = current_user.subscriptions
-      @subscriptions.map do |subscription|
-        if subscription.next_billing_date < Date.today
-          if subscription.monthly?
-            subscription.update(next_billing_date: subscription.next_billing_date.next_month)
-          elsif subscription.yearly?
-            subscription.update(next_billing_date: subscription.next_billing_date.next_year)
-          end
+    if params[:line_user_id]
+      line_user = LineUser.find_by(id: params[:line_user_id])
+      if line_user
+        @subscriptions = line_user.subscriptions
+      else
+        @subscriptions = []
+      end
+    else
+      @subscriptions = []
+    end
+
+    @subscriptions.map do |subscription|
+      if subscription.next_billing_date < Date.today
+        if subscription.monthly?
+          subscription.update(next_billing_date: subscription.next_billing_date.next_month)
+        elsif subscription.yearly?
+          subscription.update(next_billing_date: subscription.next_billing_date.next_year)
         end
       end
-      monthly_total = @subscriptions.monthly.sum(:price)
-      yearly_total = @subscriptions.yearly.sum(:price) / 12
-      @total_amount = monthly_total + yearly_total
-      earliest_date = @subscriptions.where("next_billing_date >= ?", Date.today).minimum(:next_billing_date)
-      @next_subscriptions = @subscriptions.where(next_billing_date: earliest_date)
     end
+
+    monthly_total = @subscriptions.monthly.sum(:price)
+    yearly_total = @subscriptions.yearly.sum(:price) / 12
+    @total_amount = monthly_total + yearly_total
+
+    earliest_date = @subscriptions.where("next_billing_date >= ?", Date.today).minimum(:next_billing_date)
+    @next_subscriptions = @subscriptions.where(next_billing_date: earliest_date)
   end
 
   def show
@@ -66,7 +77,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def set_subscription
-    @subscription = current_user.subscriptions.find_by(id: params[:id])
+    @subscription = Subscription.find(params[:id])
     if @subscription.blank?
       redirect_to root_path
     end
