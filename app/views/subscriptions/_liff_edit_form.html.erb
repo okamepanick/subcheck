@@ -1,0 +1,58 @@
+ <div class="row justify-content-center">
+    <%= form_with model: subscription, url: subscription_path(subscription), method: :patch, local: true do |f| %>
+      <% if subscription.errors.any? %>
+        <div class="alert alert-danger">
+          <h3><%= subscription.errors.count %>件のエラーが発生しました</h3>
+          <ul>
+            <% subscription.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="my-3">
+        <%= f.label :service_name, "利用サービス名", class: "text-secondary fw-bold mb-2" %>
+        <span class="p_required">必須</span>
+        <%= f.text_field :service_name, class: "form-control shadow-sm py-md-3" %>
+      </div>
+
+      <div class="my-3">
+        <%= f.label :start_date, "支払い開始日", class: "text-secondary fw-bold mb-2" %>
+        <span class="p_required">必須</span>
+        <%= f.date_field :start_date, class: "form-control shadow-sm py-md-3" %>
+      </div>
+
+      <div class="my-3">
+        <%= f.label :next_billing_date, "次回請求日", class: "text-secondary fw-bold mb-2" %>
+        <span class="p_required">必須</span>
+        <%= f.date_field :next_billing_date, class: "form-control shadow-sm py-md-3" %>
+      </div>
+
+      <div class="my-3">
+        <%= f.label :billing_cycle, "支払い頻度", class: "text-secondary fw-bold mb-2" %>
+        <span class="p_required">必須</span>
+        <%= f.select :billing_cycle, options_for_select([["月払い", "monthly"], ["年払い", "yearly"]], subscription.billing_cycle), {}, class: "form-control shadow-sm py-mb-3" %>
+      </div>
+
+      <div class="my-3">
+        <%= f.label :price, "利用料金", class: "text-secondary fw-bold mb-2" %>
+        <span class="p_required">必須</span>
+        <%= f.number_field :price, class: "form-control shadow-sm py-md-3"%>
+      </div>
+
+      <div class="my-3">
+        <%= f.label :payment_method, "支払い方法", class: "text-secondary fw-bold mb-2" %>
+        <span class="p_required">必須</span>
+        <%= f.select :payment_method, options_for_select([["クレジットカード", "クレジットカード"], ["銀行振込", "銀行振込"], ["口座振替", "口座振替"]], subscription.payment_method), {}, class: "form-control shadow-sm py-mb-3" %>
+      </div>
+
+      <%= f.hidden_field :line_user_id, id: 'line_user_id', value: "" %>
+
+      <div class="text-center py-md-3">
+        <%= f.submit button_text, class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>

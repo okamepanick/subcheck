@@ -1,7 +1,7 @@
 class SubscriptionsController < ApplicationController
   before_action :authenticate_admin_user!
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
-
+  before_action :set_subscription_for_liff, only: [:liff_edit]
   def index
     if params[:line_user_id]
       line_user = LineUser.find_by(id: params[:line_user_id])
@@ -58,16 +58,37 @@ class SubscriptionsController < ApplicationController
   end
 
   def update
-    if @subscription.update(subscription_params)
+    # Handle LINE user updates
+    if params[:subscription][:line_user_id].present?
+      line_user_id = params[:subscription][:line_user_id]
+      user = User.find_by(line_user_id: line_user_id)
+      @subscription = user.subscriptions.find_by(id: params[:id]) if user
+    end
+    
+    if @subscription&.update(subscription_params)
       redirect_to root_path, notice: "サブスクが正常に更新されました。"
     else
-      render :edit, status: :unprocessable_entity
+      if params[:subscription][:line_user_id].present?
+        render :liff_edit, status: :unprocessable_entity
+      else
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
 
   def destroy
     @subscription.destroy
     redirect_to root_path, notice: "サブスクが正常に削除されました。"
+  end
+
+  # LIFF methods for LINE integration
+  def liff_new
+    @subscription = Subscription.new
+    render 'liff_new'
+  end
+  
+  def liff_edit
+    render 'liff_edit'
   end
 
   private
@@ -78,6 +99,13 @@ class SubscriptionsController < ApplicationController
 
   def set_subscription
     @subscription = Subscription.find(params[:id])
+    if @subscription.blank?
+      redirect_to root_path
+    end
+  end
+  
+  def set_subscription_for_liff
+    @subscription = Subscription.find_by(id: params[:id])
     if @subscription.blank?
       redirect_to root_path
     end
