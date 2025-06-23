@@ -210,7 +210,7 @@ class LineBotsController < ApplicationController
       text += "   開始日: #{subscription.formatted_start_date}\n"
       text += "   次回請求日: #{subscription.formatted_next_billing_date}\n"
       text += "   支払いサイクル: #{subscription.billing_cycle_text}\n"
-      text += "   料金: ¥#{subscription.price.to_s(:delimited)}\n"
+      text += "   料金: ¥#{subscription.price.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}\n"
       text += "   支払い方法: #{subscription.payment_method}\n\n"
     end
     
@@ -219,7 +219,7 @@ class LineBotsController < ApplicationController
     yearly_total = subscriptions.yearly.sum(:price) / 12
     total_amount = monthly_total + yearly_total
     
-    text += "月額換算合計: ¥#{total_amount.to_s(:delimited)}"
+    text += "月額換算合計: ¥#{total_amount.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}"
     
     message = {
       type: 'text',
