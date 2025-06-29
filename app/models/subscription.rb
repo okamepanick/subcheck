@@ -1,5 +1,5 @@
 class Subscription < ApplicationRecord
-  belongs_to :user
+  belongs_to :line_user
 
   enum billing_cycle: { monthly: 1, yearly: 2 }
 
