@@ -45,9 +45,9 @@ class SubscriptionsController < ApplicationController
   def create
     line_user_id = params[:subscription][:line_user_id]
 
-    user = User.find_by(line_user_id: line_user_id)
+    line_user = LineUser.find_by(line_uid: line_user_id)
 
-    @subscription = user.subscriptions.build(subscription_params)
+    @subscription = line_user.subscriptions.build(subscription_params)
 
     if @subscription.save
       redirect_to root_path, notice: "サブスクが正常に登録されました。"
@@ -63,8 +63,8 @@ class SubscriptionsController < ApplicationController
     # Handle LINE user updates
     if params[:subscription][:line_user_id].present?
       line_user_id = params[:subscription][:line_user_id]
-      user = User.find_by(line_user_id: line_user_id)
-      @subscription = user.subscriptions.find_by(id: params[:id]) if user
+      line_user = LineUser.find_by(line_uid: line_user_id)
+      @subscription = line_user.subscriptions.find_by(id: params[:id]) if line_user
     end
     
     if @subscription&.update(subscription_params)
