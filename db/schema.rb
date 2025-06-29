@@ -10,23 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_18_075005) do
-  create_table "subscriptions", charset: "utf8mb4", force: :cascade do |t|
-    t.string "service_name", null: false
-    t.date "start_date", null: false
-    t.date "next_billing_date", null: false
-    t.integer "billing_cycle", null: false
-    t.integer "price", null: false
-    t.string "payment_method", null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_admin_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
-    t.index ["username"], name: "index_admin_users_on_username", unique: true
-  end
-
-  create_table "users", charset: "utf8mb4", force: :cascade do |t|
+ActiveRecord::Schema[7.2].define(version: 2025_05_28_140959) do
+  create_table "admin_users", charset: "utf8mb4", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "username", default: "", null: false
@@ -35,16 +20,19 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_18_075005) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_admin_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+    t.index ["username"], name: "index_admin_users_on_username", unique: true
   end
 
-  create_table "line_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "line_users", charset: "utf8mb4", force: :cascade do |t|
     t.string "display_name", null: false
     t.string "line_uid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "subscriptions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "subscriptions", charset: "utf8mb4", force: :cascade do |t|
     t.string "service_name", null: false
     t.date "start_date", null: false
     t.date "next_billing_date", null: false
