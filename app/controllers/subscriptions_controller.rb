@@ -3,7 +3,7 @@ class SubscriptionsController < ApplicationController
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
   before_action :set_subscription_for_liff, only: [:liff_edit]
   
-  layout 'liff', only: [:liff_new, :liff_edit, :liff_success, :liff_success_edit]
+  layout 'liff', only: [:liff_new, :liff_edit]
   def index
     if params[:line_user_id]
       line_user = LineUser.find_by(id: params[:line_user_id])
@@ -49,7 +49,7 @@ class SubscriptionsController < ApplicationController
       # This is a LIFF request
       line_user = LineUser.find_by(line_uid: line_user_id)
       unless line_user
-        render :liff_new, status: :unprocessable_entity, alert: "ユーザーが見つかりませんでした。"
+        render json: { error: "ユーザーが見つかりませんでした。" }, status: :unprocessable_entity
         return
       end
       
@@ -58,10 +58,10 @@ class SubscriptionsController < ApplicationController
       if @subscription.save
         # Send completion message and subscription details via LINE
         send_subscription_created_message(line_user, @subscription)
-        # Render a page that closes LIFF
-        render :liff_success
+        # Return success response for AJAX
+        render json: { success: true, message: "サブスクの登録が完了しました！" }
       else
-        render :liff_new, status: :unprocessable_entity
+        render json: { error: @subscription.errors.full_messages.join(", ") }, status: :unprocessable_entity
       end
     else
       # This is a regular web request
@@ -90,14 +90,14 @@ class SubscriptionsController < ApplicationController
       if params[:subscription][:line_user_id].present?
         # Send completion message and updated subscription details via LINE
         send_subscription_updated_message(line_user, @subscription)
-        # Render a page that closes LIFF
-        render :liff_success_edit
+        # Return success response for AJAX
+        render json: { success: true, message: "サブスクの更新が完了しました！" }
       else
         redirect_to root_path, notice: "サブスクが正常に更新されました。"
       end
     else
       if params[:subscription][:line_user_id].present?
-        render :liff_edit, status: :unprocessable_entity
+        render json: { error: @subscription.errors.full_messages.join(", ") }, status: :unprocessable_entity
       else
         render :edit, status: :unprocessable_entity
       end
