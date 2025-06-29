@@ -2,17 +2,3 @@
   <h3 class="text-center mb-4">サブスク編集</h3>
   <%= render partial: 'liff_edit_form', locals: { subscription: @subscription, button_text: '更新する' } %>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    await liff.init({ liffId: "<%= ENV['SUBSCRIPTION_EDIT_LIFF_ID'] %>" });
-
-    const profile = await liff.getProfile();
-    const userId = profile.userId;
-
-    const hiddenField = document.getElementById("line_user_id");
-    if (hiddenField) {
-      hiddenField.value = userId;
-    }
-  });
-</script>

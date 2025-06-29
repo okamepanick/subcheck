@@ -190,9 +190,14 @@ class SubscriptionsController < ApplicationController
   end
   
   def set_subscription_for_liff
-    match = params["liff.state"].match(/id=(\d+)/)
-    id = match[1]
-    @subscription = Subscription.find_by(id: id)
+    # Try to get ID from query parameter first, then from liff.state
+    id = params[:id]
+    if id.blank? && params["liff.state"].present?
+      match = params["liff.state"].match(/id=(\d+)/)
+      id = match[1] if match
+    end
+    
+    @subscription = Subscription.find_by(id: id) if id.present?
     if @subscription.blank?
       redirect_to root_path
     end
