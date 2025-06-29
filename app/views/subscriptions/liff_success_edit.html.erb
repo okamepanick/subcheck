@@ -1,0 +1,26 @@
+<div class="p-3 text-center">
+  <div class="alert alert-success">
+    <h4>✅ 更新完了</h4>
+    <p class="mb-0">サブスクの更新が完了しました！<br>LINEメッセージで詳細をお送りしました。</p>
+  </div>
+</div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      await liff.init({ liffId: "<%= ENV['SUBSCRIPTION_EDIT_LIFF_ID'] %>" });
+      
+      // Wait a moment for the user to see the success message
+      setTimeout(() => {
+        liff.closeWindow();
+      }, 2000);
+    } catch (error) {
+      console.error('LIFF initialization failed', error);
+      // Fallback: close window after delay even if LIFF fails
+      setTimeout(() => {
+        window.close();
+      }, 3000);
+    }
+  });
+</script>
