@@ -1,5 +1,6 @@
 <div class="row justify-content-center">
-    <%= form_with model: subscription, url: subscription_path(subscription), method: :patch, local: false, id: "liff-edit-form" do |f| %>
+    <%= form_with model: subscription, url: subscription_path(subscription), method: :patch, local: false, id: "liff-edit-form", data: { turbo: false } do |f| %>
+
       <% if subscription.errors.any? %>
         <div class="alert alert-danger">
           <h3><%= subscription.errors.count %>件のエラーが発生しました</h3>

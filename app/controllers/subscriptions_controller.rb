@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_admin_user!
+  # before_action :authenticate_admin_user!, except: [:liff_new, :liff_edit]
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
   before_action :set_subscription_for_liff, only: [:liff_edit]
   
@@ -190,7 +190,9 @@ class SubscriptionsController < ApplicationController
   end
   
   def set_subscription_for_liff
-    @subscription = Subscription.find_by(id: params[:id])
+    match = params["liff.state"].match(/id=(\d+)/)
+    id = match[1]
+    @subscription = Subscription.find_by(id: id)
     if @subscription.blank?
       redirect_to root_path
     end
