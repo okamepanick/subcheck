@@ -2,7 +2,7 @@ require "test_helper"
 
 class SubscriptionReminderTest < ActiveSupport::TestCase
   def setup
-    @user = users(:one)
+    @line_user = line_users(:one)
     @subscription = subscriptions(:one)
   end
 
@@ -11,9 +11,9 @@ class SubscriptionReminderTest < ActiveSupport::TestCase
     @subscription.update(next_billing_date: Date.tomorrow)
     
     # Check that the subscription is found in our scope
-    tomorrow_subscriptions = Subscription.joins(:user)
+    tomorrow_subscriptions = Subscription.joins(:line_user)
                                         .where(next_billing_date: Date.tomorrow)
-                                        .where.not(users: { line_user_id: nil })
+                                        .where.not(line_users: { line_uid: nil })
     
     assert_includes tomorrow_subscriptions, @subscription
   end

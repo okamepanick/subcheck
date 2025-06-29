@@ -7,7 +7,7 @@ one:
   billing_cycle: 1
   price: 9.99
   payment_method: MyString
-  user: one
+  line_user: one
 
 two:
   service_name: MyString
@@ -16,4 +16,4 @@ two:
   billing_cycle: 1
   price: 9.99
   payment_method: MyString
-  user: two
+  line_user: two

@@ -2,7 +2,7 @@ require "test_helper"
 
 class SubscriptionsControllerTest < ActionDispatch::IntegrationTest
   def setup
-    @user = users(:one)
+    @line_user = line_users(:one)
     @subscription = subscriptions(:one)
   end
 
@@ -25,7 +25,7 @@ class SubscriptionsControllerTest < ActionDispatch::IntegrationTest
         billing_cycle: @subscription.billing_cycle,
         price: 1999,
         payment_method: "クレジットカード",
-        line_user_id: @user.line_user_id
+        line_user_id: @line_user.line_uid
       }
     }
     assert_redirected_to root_path

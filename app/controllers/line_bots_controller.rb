@@ -31,11 +31,9 @@ class LineBotsController < ApplicationController
 
     if profile.is_a?(Net::HTTPSuccess)
       profile_data = JSON.parse(profile.body)
-      username = profile_data['displayName']
-      user = User.find_or_create_by(line_user_id: line_user_id) do |u|
-        u.email = "line_#{SecureRandom.hex(4)}@example.com"
-        u.username = username
-        u.password = line_user_id[0, 8]
+      display_name = profile_data['displayName']
+      line_user = LineUser.find_or_create_by(line_uid: line_user_id) do |u|
+        u.display_name = display_name
       end
     else
       Rails.logger.debug "プロフィール取得に失敗しました。"
@@ -46,42 +44,42 @@ class LineBotsController < ApplicationController
     return unless event.type == Line::Bot::Event::MessageType::Text
     
     line_user_id = event['source']['userId']
-    user = User.find_by(line_user_id: line_user_id)
-    return unless user
+    line_user = LineUser.find_by(line_uid: line_user_id)
+    return unless line_user
     
     message_text = event.message['text']
     Rails.logger.debug "Received message: #{message_text} from user: #{line_user_id}"
     
     case message_text
     when 'サブスク登録'
-      handle_subscription_register(event, user)
+      handle_subscription_register(event, line_user)
     when 'サブスク編集'
-      handle_subscription_edit(event, user)
+      handle_subscription_edit(event, line_user)
     when 'サブスク削除'
-      handle_subscription_delete(event, user)
+      handle_subscription_delete(event, line_user)
     when 'サブスク一覧'
-      handle_subscription_list(event, user)
+      handle_subscription_list(event, line_user)
     end
   end
   
   def handle_postback_event(event)
     line_user_id = event['source']['userId']
-    user = User.find_by(line_user_id: line_user_id)
-    return unless user
+    line_user = LineUser.find_by(line_uid: line_user_id)
+    return unless line_user
     
     postback_data = event['postback']['data']
     Rails.logger.debug "Received postback: #{postback_data} from user: #{line_user_id}"
     
     if postback_data.start_with?('edit_subscription_')
       subscription_id = postback_data.split('_').last
-      handle_subscription_edit_selected(event, user, subscription_id)
+      handle_subscription_edit_selected(event, line_user, subscription_id)
     elsif postback_data.start_with?('delete_subscription_')
       subscription_id = postback_data.split('_').last
-      handle_subscription_delete_selected(event, user, subscription_id)
+      handle_subscription_delete_selected(event, line_user, subscription_id)
     end
   end
   
-  def handle_subscription_register(event, user)
+  def handle_subscription_register(event, line_user)
     if ENV['SUBSCRIPTION_CREATE_LIFF_ID'].present?
       liff_url = "https://liff.line.me/#{ENV['SUBSCRIPTION_CREATE_LIFF_ID']}"
       
@@ -110,8 +108,8 @@ class LineBotsController < ApplicationController
     client.reply_message(event['replyToken'], message)
   end
   
-  def handle_subscription_edit(event, user)
-    subscriptions = user.subscriptions
+  def handle_subscription_edit(event, line_user)
+    subscriptions = line_user.subscriptions
     
     if subscriptions.empty?
       message = {
@@ -124,7 +122,7 @@ class LineBotsController < ApplicationController
     
     if subscriptions.count == 1
       # 1つだけの場合は直接編集画面へ
-      handle_subscription_edit_selected(event, user, subscriptions.first.id)
+      handle_subscription_edit_selected(event, line_user, subscriptions.first.id)
       return
     end
     
@@ -150,8 +148,8 @@ class LineBotsController < ApplicationController
     client.reply_message(event['replyToken'], message)
   end
   
-  def handle_subscription_delete(event, user)
-    subscriptions = user.subscriptions
+  def handle_subscription_delete(event, line_user)
+    subscriptions = line_user.subscriptions
     
     if subscriptions.empty?
       message = {
@@ -164,7 +162,7 @@ class LineBotsController < ApplicationController
     
     if subscriptions.count == 1
       # 1つだけの場合は直接削除
-      handle_subscription_delete_selected(event, user, subscriptions.first.id)
+      handle_subscription_delete_selected(event, line_user, subscriptions.first.id)
       return
     end
     
@@ -190,8 +188,8 @@ class LineBotsController < ApplicationController
     client.reply_message(event['replyToken'], message)
   end
   
-  def handle_subscription_list(event, user)
-    subscriptions = user.subscriptions
+  def handle_subscription_list(event, line_user)
+    subscriptions = line_user.subscriptions
     
     if subscriptions.empty?
       message = {
@@ -229,8 +227,8 @@ class LineBotsController < ApplicationController
     client.reply_message(event['replyToken'], message)
   end
   
-  def handle_subscription_edit_selected(event, user, subscription_id)
-    subscription = user.subscriptions.find_by(id: subscription_id)
+  def handle_subscription_edit_selected(event, line_user, subscription_id)
+    subscription = line_user.subscriptions.find_by(id: subscription_id)
     return unless subscription
     
     # 編集用のLIFF URLを生成（編集用のLIFF IDが必要）
@@ -262,8 +260,8 @@ class LineBotsController < ApplicationController
     client.reply_message(event['replyToken'], message)
   end
   
-  def handle_subscription_delete_selected(event, user, subscription_id)
-    subscription = user.subscriptions.find_by(id: subscription_id)
+  def handle_subscription_delete_selected(event, line_user, subscription_id)
+    subscription = line_user.subscriptions.find_by(id: subscription_id)
     return unless subscription
     
     service_name = subscription.service_name

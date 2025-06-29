@@ -20,8 +20,8 @@ namespace :subscriptions do
   task send_daily_reminders: :environment do
     tomorrow = Date.tomorrow
 
-    Subscription.joins(:user).where(next_billing_date: tomorrow).where.not(users: { line_user_id: nil }).each do |subscription|
-      user = subscription.user
+    Subscription.joins(:line_user).where(next_billing_date: tomorrow).where.not(line_users: { line_uid: nil }).each do |subscription|
+      line_user = subscription.line_user
 
       message = {
         type: 'text',
@@ -34,8 +34,8 @@ namespace :subscriptions do
       end
 
       begin
-        client.push_message(user.line_user_id, message)
-        Rails.logger.info "Reminder sent to #{user.line_user_id} for #{subscription.service_name}"
+        client.push_message(line_user.line_uid, message)
+        Rails.logger.info "Reminder sent to #{line_user.line_uid} for #{subscription.service_name}"
       rescue => e
         Rails.logger.error "Failed to send reminder: #{e.message}"
       end
@@ -48,12 +48,12 @@ def send_reminders_for_interval(interval, message_template)
   target_date = target_time.to_date
   
   # 対象の日付のサブスクリプションを取得
-  subscriptions = Subscription.joins(:user)
+  subscriptions = Subscription.joins(:line_user)
                               .where(next_billing_date: target_date)
-                              .where.not(users: { line_user_id: nil })
+                              .where.not(line_users: { line_uid: nil })
   
   subscriptions.each do |subscription|
-    user = subscription.user
+    line_user = subscription.line_user
     
     # 実際の請求日時を計算（仮に00:00とする）
     billing_datetime = subscription.next_billing_date.beginning_of_day
@@ -74,8 +74,8 @@ def send_reminders_for_interval(interval, message_template)
       end
 
       begin
-        client.push_message(user.line_user_id, message)
-        Rails.logger.info "#{interval.inspect} reminder sent to #{user.line_user_id} for #{subscription.service_name}"
+        client.push_message(line_user.line_uid, message)
+        Rails.logger.info "#{interval.inspect} reminder sent to #{line_user.line_uid} for #{subscription.service_name}"
       rescue => e
         Rails.logger.error "Failed to send #{interval.inspect} reminder: #{e.message}"
       end
