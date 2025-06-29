@@ -12,7 +12,7 @@ class SubscriptionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get liff edit" do
-    get liff_edit_subscription_path(@subscription)
+    get liff_edit_subscription_path, params: { id: @subscription.id }
     assert_response :success
   end
 
