@@ -1,0 +1,18 @@
+<div class="p-3">
+  <h3 class="text-center mb-4">サブスク登録</h3>
+  <%= render partial: 'form', locals: { subscription: @subscription, button_text: '登録する' } %>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    await liff.init({ liffId: "<%= ENV['SUBSCRIPTION_CREATE_LIFF_ID'] %>" });
+
+    const profile = await liff.getProfile();
+    const userId = profile.userId;
+
+    const hiddenField = document.getElementById("line_user_id");
+    if (hiddenField) {
+      hiddenField.value = userId;
+    }
+  });
+</script>
