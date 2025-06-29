@@ -2,6 +2,8 @@ class SubscriptionsController < ApplicationController
   before_action :authenticate_admin_user!
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
   before_action :set_subscription_for_liff, only: [:liff_edit]
+  
+  layout 'liff', only: [:liff_new, :liff_edit]
   def index
     if params[:line_user_id]
       line_user = LineUser.find_by(id: params[:line_user_id])
