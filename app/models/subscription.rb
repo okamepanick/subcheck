@@ -28,6 +28,29 @@ class Subscription < ApplicationRecord
     end
   end
 
+  # Update next_billing_date if it has passed
+  def update_billing_date_if_overdue
+    return unless next_billing_date < Date.today
+
+    new_date = case billing_cycle
+               when "monthly"
+                 next_billing_date.next_month
+               when "yearly"
+                 next_billing_date.next_year
+               else
+                 return
+               end
+
+    update(next_billing_date: new_date)
+  end
+
+  # Class method to update all overdue subscriptions
+  def self.update_all_overdue_billing_dates
+    where("next_billing_date < ?", Date.today).find_each do |subscription|
+      subscription.update_billing_date_if_overdue
+    end
+  end
+
   private
 
   def next_billing_date_after_start_date
