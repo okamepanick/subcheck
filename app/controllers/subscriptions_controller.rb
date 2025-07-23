@@ -1,6 +1,7 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_admin_user!
+  # before_action :authenticate_admin_user!, except: [:liff_new, :liff_edit]
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
+  layout 'liff', only: [:liff_new]
 
   def index
     if params[:line_user_id]
@@ -68,6 +69,12 @@ class SubscriptionsController < ApplicationController
   def destroy
     @subscription.destroy
     redirect_to root_path, notice: "サブスクが正常に削除されました。"
+  end
+
+  # LIFF methods for LINE integration
+  def liff_new
+    @subscription = Subscription.new
+    render :liff_new
   end
 
   private
