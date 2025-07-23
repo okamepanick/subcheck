@@ -9,5 +9,8 @@ Rails.application.routes.draw do
 #サブスクリプション
   resources :subscriptions
 
+  # LIFF routes for LINE integration
+  get 'liff/subscriptions/new', to: 'subscriptions#liff_new', as: 'liff_new_subscription'
+
   post 'line/callback', to: 'line_bots#callback'
 end
