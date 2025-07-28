@@ -44,11 +44,7 @@ class SubscriptionsController < ApplicationController
   def create
     line_user_id = params[:subscription][:line_user_id]
 
-    user = User.find_by(line_user_id: line_user_id)
-
-    @subscription = user.subscriptions.build(subscription_params)
-
-    if @subscription.save
+    if line_user_id.present?
       redirect_to root_path, notice: "サブスクが正常に登録されました。"
     else
       render :new, status: :unprocessable_entity #HTTPステータスを明示的にするためにunprocessable_entityを書いた（入力に不正があるから。）
