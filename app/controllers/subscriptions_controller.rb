@@ -118,7 +118,14 @@ class SubscriptionsController < ApplicationController
     }
 
     # 完了メッセージと詳細メッセージを一緒に送信
-    client.push_message(line_user.line_uid, [completion_message, details_messages])
+    line_client.push_message(line_user.line_uid, [completion_message, details_messages])
+  end
+
+  def line_client
+    @line_client ||= Line::Bot::Client.new do |config|
+      config.channel_secret = ENV['LINE_CHANNEL_SECRET']
+      config.channel_token = ENV['LINE_CHANNEL_ACCESS_TOKEN']
+    end
   end
 
   def subscription_params
