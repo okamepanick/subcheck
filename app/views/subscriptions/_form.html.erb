@@ -1,5 +1,5 @@
  <div class="row justify-content-center">
-    <%= form_with model: subscription, local: true do |f| %>
+    <%= form_with model: subscription, local: false, id: "liff-subscription-form" do |f| %>
       <% if subscription.errors.any? %>
         <div class="alert alert-danger">
           <h3><%= subscription.errors.count %>件のエラーが発生しました</h3>
@@ -44,18 +44,16 @@
       <div class="my-3">
         <%= f.label :payment_method, "支払い方法", class: "text-secondary fw-bold mb-2" %>
         <span class="p_required">必須</span>
-        <%= f.text_field :payment_method, class: "form-control shadow-sm py-mb-3" %>
+        <%= f.select :payment_method, options_for_select([["クレジットカード", "credit_card"], ["銀行振込", "bank_transfer"], ["口座振替", "direct_debit"]]), {}, class: "form-control shadow-sm py-mb-3" %>
       </div>
 
       <%= f.hidden_field :line_user_id, id: 'line_user_id', value: "" %>
 
       <div class="text-center py-md-3">
-        <%= f.submit button_text, class: "btn btn-primary" %>
+        <%= f.submit button_text, class: "btn btn-primary", id: "submit_btn" %>
       </div>
     <% end %>
   </div>
-
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', async () => {
@@ -67,6 +65,47 @@
     const hiddenField = document.getElementById("line_user_id");
     if (hiddenField) {
       hiddenField.value = userId;
+    }
+
+    //フォーム送信の処理
+    const form = document.getElementById('liff-subscription-form')
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('submit_btn');
+        submitBtn.disabled = true;
+        submitBtn.value = '送信中...';
+
+        try {
+          const formData = new FormData(form);
+          const response = await fetch(form.action, {
+            method: form.method || 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            //処理が成功したら LIFF の画面を閉じる処理をここで行う
+            liff.closeWindow();
+          } else {
+            //エラーを表示する
+            alert(result.error || 'エラーが発生しました');
+            submitBtn.disabled = false;
+            submitBtn.value = '登録する';
+          }
+        } catch (error) {
+          console.error('Form submission error:', error);
+          alert('エラーが発生しました');
+          submitBtn.disabled = false;
+          submitBtn.value = '登録する';
+        }
+      });
     }
   });
 </script>

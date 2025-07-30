@@ -2,6 +2,7 @@ class Subscription < ApplicationRecord
   belongs_to :line_user
 
   enum billing_cycle: { monthly: 1, yearly: 2 }
+  enum payment_method: { credit_card: 1, bank_transfer: 2, direct_debit: 3 }
 
   validates :service_name, presence: true, length: { maximum: 255 }
   validates :start_date, presence: true

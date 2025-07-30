@@ -1,6 +1,7 @@
 class SubscriptionsController < ApplicationController
-  before_action :authenticate_admin_user!
+  # before_action :authenticate_admin_user!, except: [:liff_new, :liff_edit]
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
+  layout 'liff', only: [:liff_new]
 
   def index
     if params[:line_user_id]
@@ -41,16 +42,33 @@ class SubscriptionsController < ApplicationController
   end
 
   def create
-    line_user_id = params[:subscription][:line_user_id]
+    if params[:subscription].present? && params[:subscription][:line_user_id].present?
+      line_user_id = params[:subscription][:line_user_id]
+      #LIFFアプリからのリクエストであることを確認し、LINEユーザーIDからユーザーを取得する
+      line_user = LineUser.find_by(line_uid: line_user_id)
+      unless line_user
+        render json: { error: "ユーザーが見つかりませんでした。" }, status: :unprocessable_entity
+        return
+      end
 
-    user = User.find_by(line_user_id: line_user_id)
+      @subscription = line_user.subscriptions.build(subscription_params)
 
-    @subscription = user.subscriptions.build(subscription_params)
-
-    if @subscription.save
-      redirect_to root_path, notice: "サブスクが正常に登録されました。"
+      if @subscription.save
+        #LINEで完了メッセージとサブスクリプションの詳細を送信する
+        send_subscription_created_message(line_user, @subscription)
+        #AJAXリクエストに対して、成功したことを示すレスポンスを返す
+        render json: { success: true, message: "サブスクの登録が完了しました！" }
+      else
+        render json: { error: @subscription.errors.full_messages.join(", ") }, status: :unprocessable_entity
+      end
     else
-      render :new, status: :unprocessable_entity #HTTPステータスを明示的にするためにunprocessable_entityを書いた（入力に不正があるから。）
+      #LIFF（LINE）からのリクエストではない普通のWebフォームからの登録処理
+      @subscription = Subscription.new(subscription_params)
+      if @subscription.save
+        redirect_to root_path, notice: "サブスクが正常に登録されました。"
+      else
+        render :new, status: :unprocessable_entity
+      end
     end
   end
 
@@ -70,7 +88,45 @@ class SubscriptionsController < ApplicationController
     redirect_to root_path, notice: "サブスクが正常に削除されました。"
   end
 
+  # LINE連携のための LIFF メソッド
+  def liff_new
+    @subscription = Subscription.new
+    render :liff_new
+  end
+
   private
+
+  def send_subscription_created_message(line_user, subscription)
+    #完了メッセージを送信する
+    completion_message = {
+      type: "text",
+      text: "サブスクの登録が完了しました！"
+    }
+
+    # サブスク登録情報のテキストを作成する
+    details_text = "登録内容:\n\n"
+    details_text += "サービス名: #{subscription.service_name}\n"
+    details_text += "開始日: #{subscription.start_date.strftime('%Y年%m月%d日')}\n"
+    details_text += "次回請求日: #{subscription.next_billing_date.strftime('%Y年%m月%d日')}\n"
+    details_text += "支払いサービス: #{subscription.billing_cycle == 'monthly' ? '月払い' : '年払い'}\n"
+    details_text += "料金: ¥#{subscription.price.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}\n"
+    details_text += "支払い方法: #{subscription.payment_method}"
+
+    details_messages = {
+      type: "text",
+      text: details_text
+    }
+
+    # 完了メッセージと詳細メッセージを一緒に送信
+    line_client.push_message(line_user.line_uid, [completion_message, details_messages])
+  end
+
+  def line_client
+    @line_client ||= Line::Bot::Client.new do |config|
+      config.channel_secret = ENV['LINE_CHANNEL_SECRET']
+      config.channel_token = ENV['LINE_CHANNEL_ACCESS_TOKEN']
+    end
+  end
 
   def subscription_params
     params.require(:subscription).permit(:service_name, :start_date, :next_billing_date, :billing_cycle, :price, :payment_method)
