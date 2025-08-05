@@ -15,15 +15,8 @@ class SubscriptionsController < ApplicationController
       @subscriptions = []
     end
 
-    @subscriptions.map do |subscription|
-      if subscription.next_billing_date < Date.today
-        if subscription.monthly?
-          subscription.update(next_billing_date: subscription.next_billing_date.next_month)
-        elsif subscription.yearly?
-          subscription.update(next_billing_date: subscription.next_billing_date.next_year)
-        end
-      end
-    end
+    # @subscriptions にある、このユーザーのサブスク全てに対して、期限切れの請求日があれば請求日を更新する処理を実行する
+    @subscriptions.each(&:update_billing_date_if_overdue)
 
     monthly_total = @subscriptions.monthly.sum(:price)
     yearly_total = @subscriptions.yearly.sum(:price) / 12

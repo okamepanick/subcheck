@@ -29,6 +29,20 @@ class Subscription < ApplicationRecord
     end
   end
 
+  # 次回請求日が過ぎていれば更新する
+  def update_billing_date_if_overdue
+    return unless next_billing_date < Date.today
+
+    new_date = case billing_cycle
+    when "monthly"
+      next_billing_date.next_month
+    when "yearly"
+      next_billing_date.next_year
+    end
+
+    update(next_billing_date: new_date)
+  end
+
   private
 
   def next_billing_date_after_start_date
