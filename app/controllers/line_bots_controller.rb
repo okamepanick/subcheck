@@ -18,6 +18,8 @@ class LineBotsController < ApplicationController
       case event
       when Line::Bot::Event::Follow
         handle_follow_event(event)
+      when Line::Bot::Event::Message
+        handle_message_event(event)
       end
     end
 
@@ -43,6 +45,60 @@ class LineBotsController < ApplicationController
     else
       Rails.logger.debug "プロフィール取得に失敗しました。"
     end
+  end
+
+  def handle_message_event(event)
+    return unless event.message['type'] == Line::Bot::Event::MessageType::Text
+
+    line_user_id = event['source']['userId']
+    line_user = LineUser.find_by(line_uid: line_user_id)
+    return unless line_user
+
+    message_text = event.message['text']
+    Rails.logger.debug "Received message: #{message_text} from user: #{line_user_id}"
+
+    case message_text
+    when "サブスク一覧"
+      handle_subscription_list(event, line_user)
+    end
+  end
+
+  def handle_subscription_list(event, line_user)
+    subscriptions = line_user.subscriptions
+
+    if subscriptions.empty?
+      message = {
+        type: 'text',
+        text: '登録されているサブスクがありません。'
+      }
+      client.reply_message(event['replyToken'], message)
+      return
+    end
+
+    #サブスク情報をテキストで表示
+    text = "現在登録されているサブスク一覧:\n\n"
+
+    subscriptions.each_with_index do |subscription, index|
+      text += "#{index + 1}. #{subscription.service_name}\n"
+      text += "   開始日: #{subscription.formatted_start_date}\n"
+      text += "   次回請求日: #{subscription.formatted_next_billing_date}\n"
+      text += "   支払いサイクル: #{subscription.billing_cycle_text}\n"
+      text += "   料金: ¥#{subscription.price.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}\n"
+      text += "   支払い方法: #{subscription.payment_method}\n\n"
+    end
+
+    monthly_total = subscriptions.monthly.sum(:price)
+    yearly_total = subscriptions.yearly.sum(:price) / 12
+    total_amount = monthly_total + yearly_total
+
+    text += "月額換算合計: ¥#{total_amount.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}"
+
+    message = {
+      type: 'text',
+      text: text
+    }
+
+    client.reply_message(event['replyToken'], message)
   end
 
   def client
