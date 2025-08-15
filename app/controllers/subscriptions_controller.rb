@@ -1,7 +1,9 @@
 class SubscriptionsController < ApplicationController
   # before_action :authenticate_admin_user!, except: [:liff_new, :liff_edit]
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
-  layout 'liff', only: [:liff_new]
+  before_action :set__subscription_for_liff, only: [:liff_edit]
+
+  layout 'liff', only: [:liff_new, :liff_edit]
 
   def index
     if params[:line_user_id]
@@ -87,6 +89,10 @@ class SubscriptionsController < ApplicationController
     render :liff_new
   end
 
+  def liff_edit
+    render :liff_edit
+  end
+
   private
 
   def send_subscription_created_message(line_user, subscription)
@@ -127,6 +133,20 @@ class SubscriptionsController < ApplicationController
 
   def set_subscription
     @subscription = Subscription.find(params[:id])
+    if @subscription.blank?
+      redirect_to root_path
+    end
+  end
+
+  #まずクエリパラメータからIDを取得しようとし、その後に liff.state を取得する
+  def set__subscription_for_liff
+    id = params[:id]
+    if id.blank? && params["liff.state"].present?
+      match = params["liff.state"].match(/id=(\d+)/)
+      id = match[1] if match
+    end
+
+    @subscription = Subscription.find_by(id: id) if id.present?
     if @subscription.blank?
       redirect_to root_path
     end
