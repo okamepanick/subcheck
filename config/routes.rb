@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   # LIFF routes for LINE integration
   get 'liff/subscriptions/new', to: 'subscriptions#liff_new', as: 'liff_new_subscription'
+  get 'liff/subscriptions/new', to: 'subscriptions#liff_edit,', as: 'liff_edit_subscriptions'
 
   post 'line/callback', to: 'line_bots#callback'
 end
