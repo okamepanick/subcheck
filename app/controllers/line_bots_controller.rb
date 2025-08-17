@@ -113,7 +113,7 @@ class LineBotsController < ApplicationController
       altText: '編集するサブスクを選択してください',
       template: {
         type: 'buttons',
-        text: '編集するサブスクを選択してください'
+        text: '編集するサブスクを選択してください',
         actions: actions
       }
     }
