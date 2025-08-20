@@ -62,6 +62,8 @@ class LineBotsController < ApplicationController
     case message_text
     when "サブスク編集"
       handle_subscription_edit(event,line_user)
+    when "サブスク削除"
+      handle_subscription_delete(event, line_user)
     when "サブスク一覧"
       handle_subscription_list(event, line_user)
     end
@@ -78,6 +80,9 @@ class LineBotsController < ApplicationController
     if postback_data.start_with?('edit_subscription_')
       subscription_id = postback_data.split('_').last
       handle_subscription_edit_selected(event, line_user, subscription_id)
+    elsif postback_data.start_with?('delete_subscription_')
+      subscription_id = postback_data.split('_').last
+      handle_subscription_delete_selected(event, line_user, subscription_id)
     end
   end
 
@@ -114,6 +119,46 @@ class LineBotsController < ApplicationController
       template: {
         type: 'buttons',
         text: '編集するサブスクを選択してください',
+        actions: actions
+      }
+    }
+
+    client.reply_message(event['replyToken'], message)
+  end
+
+  def handle_subscription_delete(event, line_user)
+    subscriptions = line_user.subscriptions
+
+    if subscriptions.empty?
+      message = {
+        type: 'text',
+        text: '登録されているサブスクがありません。'
+      }
+      client.reply_message(event['replyToken'], message)
+      return
+    end
+
+    if subscriptions.count == 1
+       # 1つだけの場合は直接削除
+       handle_subscription_delete_selected(event, line_user, subscriptions.first.id)
+       return
+    end
+
+    # 複数ある場合は選択肢を表示
+    actions = subscriptions.limit(4).map do |subscription|
+      {
+        type: 'postback',
+        label: subscription.service_name,
+        data: "delete_subscription_#{subscription.id}"
+      }
+    end
+
+    message = {
+      type: 'template',
+      altText: "削除するサブスクを選択してください",
+      template: {
+        type: 'buttons',
+        text: '削除するサブスクを選択して下さい',
         actions: actions
       }
     }
@@ -160,37 +205,58 @@ class LineBotsController < ApplicationController
   end
 
   def handle_subscription_edit_selected(event, line_user, subscription_id)
-      subscription = line_user.subscriptions.find_by(id: subscription_id)
-      return unless subscription
+    subscription = line_user.subscriptions.find_by(id: subscription_id)
+    return unless subscription
 
-      # 編集用のLIFF URLを生成（編集用のLIFF IDが必要）
-      if ENV['SUBSCRIPTION_EDIT_LIFF_ID'].present?
-        liff_url = "https://liff.line.me/#{ENV['SUBSCRIPTION_EDIT_LIFF_ID']}?id=#{subscription.id}"
+    # 編集用のLIFF URLを生成（編集用のLIFF IDが必要）
+    if ENV['SUBSCRIPTION_EDIT_LIFF_ID'].present?
+      liff_url = "https://liff.line.me/#{ENV['SUBSCRIPTION_EDIT_LIFF_ID']}?id=#{subscription.id}"
 
-        message = {
-          type: 'template',
-          altText: "#{subscription.service_name}の編集",
-          template: {
-            type: 'buttons',
-            text: "#{subscription.service_name}を編集します",
-            actions: [
-              {
-                type: 'uri',
-                label: '編集フォームを開く',
-                uri: liff_url
-              }
-            ]
-          }
+      message = {
+        type: 'template',
+        altText: "#{subscription.service_name}の編集",
+        template: {
+          type: 'buttons',
+          text: "#{subscription.service_name}を編集します",
+          actions: [
+            {
+              type: 'uri',
+              label: '編集フォームを開く',
+              uri: liff_url
+            }
+          ]
         }
-      else
-        message = {
-          type: 'text',
-          text: "編集機能は現在利用できません。LIFF IDが設定されていません。"
-        }
-      end
-
-      client.reply_message(event['replyToken'], message)
+      }
+    else
+      message = {
+        type: 'text',
+        text: "編集機能は現在利用できません。LIFF IDが設定されていません。"
+      }
     end
+
+    client.reply_message(event['replyToken'], message)
+  end
+
+  def handle_subscription_delete_selected(event, line_user, subscription_id)
+    subscription = line_user.subscriptions.find_by(id: subscription_id)
+    return unless subscription
+
+    service_name = subscription.service_name
+
+    if subscription.destroy
+      message = {
+        type: 'text',
+        text: "#{subscription.service_name}のサブスクを削除しました。"
+      }
+    else
+      message = {
+        type: 'text',
+        text: "削除に失敗しました。もう一度お試しください。"
+      }
+    end
+
+    client.reply_message(event['replyToken'], message)
+  end
 
   def client
     @client ||= Line::Bot::Client.new do |config|
