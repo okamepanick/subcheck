@@ -1,7 +1,9 @@
 class SubscriptionsController < ApplicationController
-  # before_action :authenticate_admin_user!, except: [:liff_new, :liff_edit]
+  #before_action :authenticate_admin_user!, except: [:liff_new, :liff_edit]
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
-  layout 'liff', only: [:liff_new]
+  before_action :set__subscription_for_liff, only: [:liff_edit]
+
+  layout 'liff', only: [:liff_new, :liff_edit]
 
   def index
     if params[:line_user_id]
@@ -69,10 +71,29 @@ class SubscriptionsController < ApplicationController
   end
 
   def update
-    if @subscription.update(subscription_params)
-      redirect_to root_path, notice: "サブスクが正常に更新されました。"
+    #LINEユーザーの更新処理を扱う
+    if params[:subscription][:line_user_id].present?
+      line_user_id = params[:subscription][:line_user_id]
+      line_user = LineUser.find_by(line_uid: line_user_id)
+      @subscription = line_user.subscriptions.find_by(id: params[:id]) if line_user
+    end
+
+    if @subscription&.update(subscription_params)
+      #このリクエストが LINE の LIFF アプリから送られたものか確認
+      if params[:subscription][:line_user_id].present?
+        #LINEで完了メッセージと更新済みサブスク情報を送る
+        send_subscription_updated_message(line_user, @subscription)
+        #AJAX 用の成功レスポンスを返す
+        render json: { success: true, message: "サブスクの更新が完了しました！"}
+      else
+        redirect_to root_path, notice: "サブスクが正常に更新されました。"
+      end
     else
-      render :edit, status: :unprocessable_entity
+      if params[:subscription][:line_user_id].present?
+        render json: {error: @subscription.errors.full_messages.join(", ")}, status: :unprocessable_entity
+      else
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
 
@@ -85,6 +106,10 @@ class SubscriptionsController < ApplicationController
   def liff_new
     @subscription = Subscription.new
     render :liff_new
+  end
+
+  def liff_edit
+    render :liff_edit
   end
 
   private
@@ -114,6 +139,31 @@ class SubscriptionsController < ApplicationController
     line_client.push_message(line_user.line_uid, [completion_message, details_messages])
   end
 
+  def send_subscription_updated_message(line_user, subscription)
+    #完了メッセージを送信する
+    completion_message = {
+      type: "text",
+      text: "サブスクの更新が完了しました！"
+    }
+
+    #サブスク更新情報のテキストを作成する
+    details_text = "更新内容:\n\n"
+    details_text += "サービス名: #{subscription.service_name}\n"
+    details_text += "開始日: #{subscription.start_date.strftime('%Y年%m月%d日')}\n"
+    details_text += "次回請求日: #{subscription.next_billing_date.strftime('%Y年%m月%d日')}\n"
+    details_text += "支払いサイクル: #{subscription.billing_cycle == 'monthly' ? '月払い' : '年払い'}\n"
+    details_text += "料金 : ¥#{subscription.price.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}\n"
+    details_text += "支払い方法: #{subscription.payment_method}"
+
+    details_messages = {
+      type: "text",
+      text: details_text
+    }
+
+    # 完了メッセージと詳細メッセージを一緒に送信
+    line_client.push_message(line_user.line_uid, [completion_message, details_messages])
+  end
+
   def line_client
     @line_client ||= Line::Bot::Client.new do |config|
       config.channel_secret = ENV['LINE_CHANNEL_SECRET']
@@ -127,6 +177,20 @@ class SubscriptionsController < ApplicationController
 
   def set_subscription
     @subscription = Subscription.find(params[:id])
+    if @subscription.blank?
+      redirect_to root_path
+    end
+  end
+
+  #まずクエリパラメータからIDを取得しようとし、その後に liff.state を取得する
+  def set__subscription_for_liff
+    id = params[:id]
+    if id.blank? && params["liff.state"].present?
+      match = params["liff.state"].match(/id=(\d+)/)
+      id = match[1] if match
+    end
+
+    @subscription = Subscription.find_by(id: id) if id.present?
     if @subscription.blank?
       redirect_to root_path
     end
