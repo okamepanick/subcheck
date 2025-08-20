@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
-  # before_action :authenticate_admin_user!, except: [:liff_new, :liff_edit]
+  #before_action :authenticate_admin_user!, except: [:liff_new, :liff_edit]
   before_action :set_subscription, only: [:show, :edit, :update, :destroy]
   before_action :set__subscription_for_liff, only: [:liff_edit]
 
@@ -74,7 +74,7 @@ class SubscriptionsController < ApplicationController
     #LINEユーザーの更新処理を扱う
     if params[:subscription][:line_user_id].present?
       line_user_id = params[:subscription][:line_user_id]
-      line_user = Line_user.find_by(line_uid: line_user_id)
+      line_user = LineUser.find_by(line_uid: line_user_id)
       @subscription = line_user.subscriptions.find_by(id: params[:id]) if line_user
     end
 

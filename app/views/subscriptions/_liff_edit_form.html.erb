@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
   <%= form_with model: subscription, url: subscription_path(subscription), method: :patch, local: false, id: "liff-edit-form", data: {turbo: false} do |f| %>
 
-    <% if submission.errors.any? %>
+    <% if subscription.errors.any? %>
       <div class="alert alert-danger">
         <h3><%= subscription.errors.count %>件のエラーが発生しました</h3>
         <ul>
@@ -51,7 +51,7 @@
     <%= f.hidden_field :line_user_id, id: 'line_user_id', value: "" %>
 
     <div class="text-center py-md-3">
-      <%= f.submit button_text, class: "btn btn-primary" id: "edit-submit-btn" %>
+      <%= f.submit button_text, class: "btn btn-primary", id: "edit-submit-btn" %>
     </div>
   <% end %>
 </div>

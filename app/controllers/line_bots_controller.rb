@@ -145,7 +145,21 @@ class LineBotsController < ApplicationController
       text += "   支払い方法: #{subscription.payment_method}\n\n"
     end
 
-    def handle_subscription_edit_selected(event, line_user, subscription_id)
+    monthly_total = subscriptions.monthly.sum(:price)
+    yearly_total = subscriptions.yearly.sum(:price) / 12
+    total_amount = monthly_total + yearly_total
+
+    text += "月額換算合計: ¥#{total_amount.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}"
+
+    message = {
+      type: 'text',
+      text: text
+    }
+
+    client.reply_message(event['replyToken'], message)
+  end
+
+  def handle_subscription_edit_selected(event, line_user, subscription_id)
       subscription = line_user.subscriptions.find_by(id: subscription_id)
       return unless subscription
 
@@ -177,20 +191,6 @@ class LineBotsController < ApplicationController
 
       client.reply_message(event['replyToken'], message)
     end
-
-    monthly_total = subscriptions.monthly.sum(:price)
-    yearly_total = subscriptions.yearly.sum(:price) / 12
-    total_amount = monthly_total + yearly_total
-
-    text += "月額換算合計: ¥#{total_amount.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}"
-
-    message = {
-      type: 'text',
-      text: text
-    }
-
-    client.reply_message(event['replyToken'], message)
-  end
 
   def client
     @client ||= Line::Bot::Client.new do |config|
