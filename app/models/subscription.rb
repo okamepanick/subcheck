@@ -43,6 +43,23 @@ class Subscription < ApplicationRecord
     update(next_billing_date: new_date)
   end
 
+  def self.update_all_overdue_billing_dates
+    Rails.logger.info "Starting billing date update task..."
+
+    updated_count = 0
+    where("next_billing_date < ?", Date.today).find_each do |subscription|
+      old_date = subscription.next_billing_date
+      subscription.update_billing_date_if_overdue
+      subscription.reload
+
+      if subscription.next_billing_date != old_date
+        updated_count += 1
+        Rails.logger.info "Updated #{subscription.service_name} (ID: #{subscription.id}) from #{old_date} to #{subscription.next_billing_date}"
+      end
+    end
+    Rails.logger.info "Billing date update task completed. Updated #{updated_count} subscriptions."
+  end
+
   private
 
   def next_billing_date_after_start_date
