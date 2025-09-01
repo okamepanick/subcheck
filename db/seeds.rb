@@ -14,8 +14,8 @@ end
 line_user1.subscriptions.find_or_create_by!(
   service_name: "アマゾン",
   start_date: Date.new(2025, 6, 1),
-  next_billing_date: Date.new(2025, 6, 30),
+  next_billing_date: Date.today,
   billing_cycle: 1,
   price: 4000,
-  payment_method: "現金"
+  payment_method: :credit_card
 )
