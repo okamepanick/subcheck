@@ -50,6 +50,6 @@ test:
 #
 production:
   <<: *default
-  database: subcheck_production
-  username: subcheck
-  password: <%= ENV["SUBCHECK_DATABASE_PASSWORD"] %>
+  adapter: postgresql
+  encoding: unicode
+  url: <%= ENV['DATABASE_URL'] %>
