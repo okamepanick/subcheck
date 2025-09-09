@@ -1,9 +1,17 @@
 class ChangePaymentMethodToIntegerInSubscriptions < ActiveRecord::Migration[7.2]
   def up
-    change_column :subscriptions, :payment_method, :integer
+    execute <<-SQL
+      ALTER TABLE subscriptions
+      ALTER COLUMN payment_method TYPE integer
+      USING payment_method::integer
+    SQL
   end
 
   def down
-    change_column :subscriptions, :payment_method, :string
+    execute <<-SQL
+      ALTER TABLE subscriptions
+      ALTER COLUMN payment_method TYPE varchar
+      USING payment_method::varchar
+    SQL
   end
 end
