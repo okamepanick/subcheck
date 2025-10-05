@@ -37,6 +37,7 @@ class Subscription < ApplicationRecord
       "銀行振込"
     when "direct_debit"
       "口座振替"
+    end
   end
 
   # 次回請求日が過ぎていれば更新する
