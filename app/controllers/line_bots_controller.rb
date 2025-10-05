@@ -205,7 +205,7 @@ class LineBotsController < ApplicationController
       text += "   次回請求日: #{subscription.formatted_next_billing_date}\n"
       text += "   支払いサイクル: #{subscription.billing_cycle_text}\n"
       text += "   料金: ¥#{subscription.price.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}\n"
-      text += "   支払い方法: #{subscription.payment_method}\n\n"
+      text += "   支払い方法: #{subscription.payment_method_text}\n\n"
     end
 
     monthly_total = subscriptions.monthly.sum(:price)

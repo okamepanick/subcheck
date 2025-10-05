@@ -29,6 +29,16 @@ class Subscription < ApplicationRecord
     end
   end
 
+  def payment_method_text
+    case payment_method
+    when "credit_card"
+      "クレジットカード"
+    when "bank_transfer"
+      "銀行振込"
+    when "direct_debit"
+      "口座振替"
+  end
+
   # 次回請求日が過ぎていれば更新する
   def update_billing_date_if_overdue
     return unless next_billing_date < Date.today
