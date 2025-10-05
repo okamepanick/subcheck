@@ -153,7 +153,7 @@ class SubscriptionsController < ApplicationController
     details_text += "次回請求日: #{subscription.next_billing_date.strftime('%Y年%m月%d日')}\n"
     details_text += "支払いサイクル: #{subscription.billing_cycle == 'monthly' ? '月払い' : '年払い'}\n"
     details_text += "料金 : ¥#{subscription.price.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}\n"
-    details_text += "支払い方法: #{subscription.payment_method}"
+    details_text += "支払い方法: #{subscription.payment_method_text}"
 
     details_messages = {
       type: "text",
