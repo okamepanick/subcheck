@@ -1,4 +1,4 @@
-set :environment, 'development'
+set :environment, 'production'
 set :output, 'log/cron.log'
 
 # 毎日深夜に延滞請求日を更新する
