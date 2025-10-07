@@ -1,0 +1,2 @@
+module Cron::SubscriptionsHelper
+end

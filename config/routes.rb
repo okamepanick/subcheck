@@ -14,4 +14,10 @@ Rails.application.routes.draw do
   get 'liff/subscriptions/edit', to: 'subscriptions#liff_edit', as: 'liff_edit_subscription'
 
   post 'line/callback', to: 'line_bots#callback'
+
+  # Cron用のURLからRakeタスクを実行
+  namespace :cron do
+    get 'send_daily_reminders', to: 'subscriptions#send_daily_reminders_job'
+    get 'update_billing_date', to: 'subscriptions#update_billing_date_job'
+  end
 end
