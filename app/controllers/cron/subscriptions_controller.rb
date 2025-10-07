@@ -1,6 +1,10 @@
 class Cron::SubscriptionsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
+  # Rakeタスクを使う準備
+  require 'rake'
+  Rails.application.load_tasks
+
   def send_daily_reminders_job
     Rake::Task['subscriptions:send_daily_reminders'].reenable
     Rake::Task['subscriptions:send_daily_reminders'].invoke
