@@ -26,6 +26,7 @@ gem "devise-i18n", "1.12.0"
 # LINE Botとの連携用
 gem "line-bot-api"
 gem "dotenv-rails"
+gem "rack-cors"
 
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
