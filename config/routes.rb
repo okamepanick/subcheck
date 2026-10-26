@@ -20,4 +20,8 @@ Rails.application.routes.draw do
     get 'send_daily_reminders', to: 'subscriptions#send_daily_reminders_job'
     get 'update_billing_date', to: 'subscriptions#update_billing_date_job'
   end
+
+  namespace :api do
+    resources :subscriptions, only: [:index]
+  end
 end
