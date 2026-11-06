@@ -1,45 +1,37 @@
-# Subcheck - サブスクリプション管理アプリ
+# SubCheck
 
-サブスクリプション管理用のWebアプリケーション。LINEボット機能により、LINEから直接サブスクの登録・編集・削除・一覧表示が可能です。
+サブスクリプションの請求日と支出を保存する API です。
+LINE のリッチメニューから使います。
 
-## LINE Bot 機能
+## リッチメニュー
 
-### リッチメニュー対応機能
-1. **サブスク登録** - 新規サブスクリプションをLIFFフォームで登録
-2. **サブスク編集** - 既存のサブスクリプションを選択して編集
-3. **サブスク削除** - 既存のサブスクリプションを選択して削除
-4. **サブスク一覧** - 登録済みサブスクリプションの一覧表示と月額合計
-5. **リマインダー** - 更新日の16時間前、8時間前、2時間前、30分前に自動通知
+- 登録は、Rails の登録フォームを開く
+- 編集は、LINE 上でサブスクを選んで Rails の編集フォームを開く
+- 一覧は、LINE のトークに登録内容を返す
+- 削除は、LINE 上でサブスクを選んで削除する
+- アプリを開くは、React のアプリを開く
+- 使い方は、ボタンだけあり、処理はまだない
 
-### 環境変数設定
-LINEボット機能を使用するには以下の環境変数が必要です：
-- `LINE_CHANNEL_SECRET`: LINE Botチャンネルシークレット
-- `LINE_CHANNEL_ACCESS_TOKEN`: LINE Botアクセストークン
-- `SUBSCRIPTION_CREATE_LIFF_ID`: 登録用LIFF ID
-- `SUBSCRIPTION_EDIT_LIFF_ID`: 編集用LIFF ID
+React 側では、一覧、登録、編集、削除、カレンダー、分析ができる。保存先は、この Rails の API です。LINE の ID トークンで本人を確認し、LINE ユーザー ID は URL にも JSON にも入れません。
 
-## 従来のREADME内容
+## リマインダー
 
+- 請求日の 16 時間前、8 時間前、2 時間前、30 分前に通知する
+- 毎日 10 時に、明日が請求日のサブスクを通知する
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 環境変数
 
-Things you may want to cover:
+値そのものは書きません。
 
-* Ruby version
+- `LINE_CHANNEL_SECRET`
+- `LINE_CHANNEL_ACCESS_TOKEN`
+- `LINE_CHANNEL_ID`
+- `SUBSCRIPTION_CREATE_LIFF_ID`
+- `SUBSCRIPTION_EDIT_LIFF_ID`
 
-* System dependencies
+## データベース
+本番は PostgreSQL です。
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## バージョン
+- Ruby 3.1.0
+- Rails 7.2
