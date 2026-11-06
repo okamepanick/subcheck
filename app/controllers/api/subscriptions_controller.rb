@@ -25,6 +25,38 @@ class Api::SubscriptionsController < ApplicationController
     end
   end
 
+  def update
+    subscription = @line_user.subscriptions.find_by(id: params[:id])
+    unless subscription
+      render json: { error: "サブスクが見つかりません" }, status: :not_found
+      return
+    end
+
+    if subscription.update(
+      service_name: params[:serviceName],
+      price: params[:price],
+      billing_cycle: params[:billingCycle],
+      start_date: params[:startDate],
+      next_billing_date: params[:nextBillingDate],
+      payment_method: params[:paymentMethod]
+    )
+      render json: subscription_json(subscription)
+    else
+      render json: { error: subscription.errors.full_messages.join(", ") }, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    subscription = @line_user.subscriptions.find_by(id: params[:id])
+    unless subscription
+      render json: { error: "サブスクが見つかりません" }, status: :not_found
+      return
+    end
+
+    subscription.destroy
+    head :no_content
+  end
+
   private
 
   def set_line_user
@@ -43,6 +75,7 @@ class Api::SubscriptionsController < ApplicationController
     @line_user = LineUser.find_by(line_uid: line_uid)
     unless @line_user
       render json: { error: "LINEユーザーが見つかりません" }, status: :unprocessable_entity
+      return
     end
   end
 
